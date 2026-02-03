@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>KnowEasy OS – Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <meta name="theme-color" content="#F8FAFC"/>
+  <script>
+    // Apply role class early (before paint) so parent login never flashes student navigation.
+    (function(){
+      try{
+        var params = new URLSearchParams(location.search || '');
+        var role = String(params.get('role') || '').toLowerCase().trim();
+        if(role === 'parent') document.documentElement.classList.add('role-parent');
+      }catch(_e){}
+    })();
+  </script>
+  <style>
+    /* Parent login must NOT show student navigation (bottom nav becomes sidebar on desktop). */
+    html.role-parent .bottom-nav,
+    body.role-parent .bottom-nav{ display:none !important; }
+    html.role-parent .bottom-padding,
+    body.role-parent .bottom-padding{ display:none !important; }
+  </style>
+</head>
+<body class="has-app">
+<div class="app">
+
+  <header class="app-header">
+    <div class="app-header__brand">
+      <div class="brand-logo">KE</div>
+      <div class="brand-text">
+        <div class="brand-title">KnowEasy OS</div>
+        <div class="brand-subtitle">Login • Email OTP</div>
+        <div class="brand-meta" id="roleMeta">Secure • No password</div>
+      </div>
+    </div>
+    <button class="app-header__profile-btn" id="topBackBtn" type="button" title="Back">
+      <span class="profile-avatar">←</span>
+    </button>
+  </header>
+
+  <main class="app-main">
+    <section class="card" style="margin-top:14px;">
+      <p style="margin:0; font-weight:900;" id="continueAs">Continue</p>
+
+      <div style="margin-top:14px;">
+        <label class="field-label">Email address</label>
+        <input id="emailInput" class="field-input" type="email" placeholder="name@example.com" autocomplete="email"/>
+      </div>
+
+      <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
+        <button id="sendBtn" class="primary-btn" type="button">Send OTP</button>
+        <button id="backBtn" class="ghost-btn hidden" type="button">Back</button>
+        <button id="logoutBtn" class="ghost-btn hidden" type="button">Logout</button>
+      </div>
+
+      <div id="otpBox" class="hidden" style="margin-top:14px;">
+        <label class="field-label">Enter OTP</label>
+        <input id="otpInput" class="field-input" inputmode="numeric" placeholder="6-digit code"/>
+        <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
+          <button id="verifyBtn" class="primary-btn" type="button">Verify & Login</button>
+          <button id="resendBtn" class="ghost-btn" type="button">Resend</button>
+        </div>
+        <p style="margin:10px 0 0; opacity:0.75; font-size:13px; line-height:1.45;">
+          We sent a code to your email. It expires in 10 minutes.
+        </p>
+      </div>
+
+      <div id="msg" style="margin-top:12px; font-size:13px; line-height:1.45;"></div>
+    </section>
+
+    <section class="card" style="margin-top:12px;">
+      <p style="margin:0; font-weight:900;">Privacy</p>
+      <p style="margin:8px 0 0; opacity:0.8; line-height:1.45;">
+        No passwords. We use a one-time code sent to your email.
+      </p>
+    </section>
+
+    <div class="bottom-padding"></div>
+  </main>
+
+  <!-- Student navigation only (hidden automatically in parent role) -->
+  <nav class="bottom-nav">
+    <button class="bottom-nav__item" onclick="window.location.href='index.html'" type="button" aria-label="Home">
+      <img alt="Home icon" class="nav-icon" src="assets/nav-home.svg"/>
+      <span class="bottom-nav__label">Home</span>
+    </button>
+    <button class="bottom-nav__item" onclick="window.location.href='study.html'" type="button" aria-label="Study">
+      <img alt="Study icon" class="nav-icon" src="assets/nav-study.svg"/>
+      <span class="bottom-nav__label">Study</span>
+    </button>
+    <button class="bottom-nav__item" onclick="window.location.href='test.html'" type="button" aria-label="Test">
+      <img alt="Test icon" class="nav-icon" src="assets/nav-test.svg"/>
+      <span class="bottom-nav__label">Test</span>
+    </button>
+    <button class="bottom-nav__item bottom-nav__item--active" type="button" aria-label="Me">
+      <img alt="Me icon" class="nav-icon" src="assets/nav-me.svg"/>
+      <span class="bottom-nav__label">Me</span>
+    </button>
+  </nav>
+
+</div>
+
+<script src="auth.js"></script>
+<script>
+(function(){
+  'use strict';
+
+  const msg = document.getElementById('msg');
+  const roleMeta = document.getElementById('roleMeta');
+  const continueAs = document.getElementById('continueAs');
+  const topBackBtn = document.getElementById('topBackBtn');
+
+  const emailInput  = document.getElementById('emailInput');
+  const sendBtn     = document.getElementById('sendBtn');
+  const otpBox      = document.getElementById('otpBox');
+  const otpInput    = document.getElementById('otpInput');
+  const verifyBtn   = document.getElementById('verifyBtn');
+  const resendBtn   = document.getElementById('resendBtn');
+  const backBtn     = document.getElementById('backBtn');
+  const logoutBtn   = document.getElementById('logoutBtn');
+
+  function qp(name){
+    try{ return new URLSearchParams(location.search||'').get(name) || ''; }catch{ return ''; }
+  }
+
+  // ---- ROLE LOCK (no UI switching) ----
+  // Default is student. Parent role must be explicit via URL (?role=parent).
+  let role = (qp('role')||'').toLowerCase().trim();
+  if(role !== 'parent') role = 'student';
+
+  // Safe next allowlist
+  const nextRaw = qp('next');
+  const safeNextPages = new Set(['index.html','me.html','parent.html','upgrade.html','test.html','luma.html','study.html','chat.html']);
+  function computeNext(){
+    try{
+      const raw = String(nextRaw||'').trim().replace(/^\/+/, '');
+      const file = raw.split('?')[0].toLowerCase();
+      if(raw && safeNextPages.has(file)) return raw;
+    }catch(_e){}
+    return role === 'parent' ? 'parent.html' : 'me.html';
+  }
+
+  // Visual role styling
+  if(role === 'parent'){
+    document.body.classList.add('role-parent');
+    continueAs.textContent = 'Continue as Parent';
+    roleMeta.textContent = 'Parent login • Secure • No password';
+    topBackBtn.onclick = () => { location.href = 'welcome.html'; };
+  }else{
+    continueAs.textContent = 'Continue as Student';
+    roleMeta.textContent = 'Student login • Secure • No password';
+    topBackBtn.onclick = () => { location.href = 'me.html'; };
+  }
+
+  function showMessage(text, ok){
+    msg.textContent = text || '';
+    msg.style.opacity = text ? '1' : '0';
+    msg.style.color = ok ? 'inherit' : '#b91c1c';
+  }
+
+  let cooldownUntil = 0;
+  function nowMs(){ return Date.now(); }
+  function setCooldown(seconds){ cooldownUntil = nowMs() + (seconds*1000); }
+  function canSend(){ return nowMs() >= cooldownUntil; }
+
+  async function requestOtp(){
+    if(!canSend()){
+      showMessage('Please wait a moment before trying again.', false);
+      return;
+    }
+    const email = (emailInput.value||'').trim();
+    if(!email){
+      showMessage('Please enter your email address.', false);
+      return;
+    }
+    showMessage('Sending OTP…', true);
+
+    const {res, data} = await window.KnowEasyAuth.apiFetch('/auth/request-otp', {
+      method:'POST',
+      body: JSON.stringify({ email, role })
+    });
+
+    if(res && res.ok && data && data.ok){
+      otpBox.classList.remove('hidden');
+      backBtn.classList.remove('hidden');
+      setCooldown(data.cooldown_seconds || 30);
+      showMessage('OTP sent. Please check your email.', true);
+      try{ otpInput.focus(); }catch(_e){}
+      return;
+    }
+
+    const cd = (data && data.cooldown_seconds) ? data.cooldown_seconds : 0;
+    if(res && res.status === 429 && cd){
+      setCooldown(cd);
+      showMessage('Please wait before requesting another OTP.', false);
+      return;
+    }
+    showMessage((data && data.message) ? data.message : 'Could not send OTP.', false);
+  }
+
+  async function verifyOtp(){
+    const email = (emailInput.value||'').trim();
+    const otp = (otpInput.value||'').trim();
+    if(!otp){
+      showMessage('Enter the OTP code.', false);
+      return;
+    }
+    showMessage('Verifying…', true);
+
+    const {res, data} = await window.KnowEasyAuth.apiFetch('/auth/verify-otp', {
+      method:'POST',
+      body: JSON.stringify({ email, role, otp })
+    });
+
+    if(res && res.ok && data && data.ok && data.session_token){
+      // Store into the correct role bucket (student vs parent)
+      window.KnowEasyAuth.setToken(data.session_token, role);
+      window.KnowEasyAuth.setUser(data.user || { email, role }, role);
+      showMessage('Login successful. Redirecting…', true);
+      const target = computeNext();
+      setTimeout(() => { location.href = target; }, 350);
+      return;
+    }
+
+    if(data && data.retry_after_seconds){
+      showMessage((data.message || 'Please wait and try again.'), false);
+      return;
+    }
+    showMessage((data && data.message) ? data.message : 'Could not verify OTP.', false);
+  }
+
+  function back(){
+    otpBox.classList.add('hidden');
+    backBtn.classList.add('hidden');
+    otpInput.value = '';
+    showMessage('', true);
+  }
+
+  sendBtn.onclick = requestOtp;
+  resendBtn.onclick = requestOtp;
+  verifyBtn.onclick = verifyOtp;
+  backBtn.onclick = back;
+
+  (async function init(){
+    const u = await window.KnowEasyAuth.fetchMe();
+    if(!u) return;
+
+    // If already logged in with same role, redirect immediately.
+    const loggedRole = String((u.role || '')).toLowerCase();
+    if(loggedRole === role){
+      window.KnowEasyAuth.setUser(u);
+      location.href = computeNext();
+      return;
+    }
+
+    // If logged in as different role, require explicit logout.
+    showMessage('You are currently logged in as ' + (loggedRole || 'student') + '. Logout to continue as ' + role + '.', false);
+    logoutBtn.classList.remove('hidden');
+    logoutBtn.onclick = async function(){
+      try{ await window.KnowEasyAuth.logout(); }catch(_e){}
+      location.reload();
+    };
+  })();
+})();
+</script>
+
+</body>
+</html>

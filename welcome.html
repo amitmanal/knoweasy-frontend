@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com" rel="preconnect"/>
+<meta charset="utf-8"/>
+<title>Setup • KnowEasy AI</title>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<meta content="#EEF1FF" name="theme-color"/>
+<link href="styles.css" rel="stylesheet"/>
+<style>html{visibility:visible !important;}</style>
+<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+<style>
+    :root{
+      --fg:#0b0b0c;
+      --muted:rgba(15,23,42,0.62);
+      --border:rgba(148,163,184,0.22);
+      --glass:rgba(255,255,255,0.70);
+      --primary:rgba(59,130,246,0.95);
+      --primaryFg:#fff;
+    }
+
+    html,body{ height:100%; }
+body{
+      margin:0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+      color:var(--fg);
+      /* Use dynamic viewport units to account for mobile browser UI
+         chrome/scrollbars. The fallback ensures older browsers still
+         receive a sensible height. */
+      min-height:100vh;
+      min-height:100dvh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      box-sizing:border-box;
+      overflow:hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      background: linear-gradient(180deg, #F3F6FF 0%, #EEF1FF 45%, #EAEFFF 100%);
+    }
+
+    /* Ultra-subtle animated gradient */
+    body::before{
+      content:"";
+      position:fixed;
+      inset:-40%;
+      background:
+        radial-gradient(900px 600px at 20% 20%, rgba(59,130,246,0.18), transparent 60%),
+        radial-gradient(900px 600px at 85% 25%, rgba(99,102,241,0.14), transparent 62%),
+        radial-gradient(900px 600px at 55% 95%, rgba(14,165,233,0.10), transparent 60%);
+      animation: floatGradient 14s ease-in-out infinite;
+      pointer-events:none;
+      z-index:0;
+    }
+    @keyframes floatGradient{
+      0%   { transform: translate3d(-1.5%, -1%, 0) scale(1.02); }
+      50%  { transform: translate3d( 1.5%,  1%, 0) scale(1.04); }
+      100% { transform: translate3d(-1.5%, -1%, 0) scale(1.02); }
+    }
+
+    .wrap{
+      width:100%;
+      max-width:520px;
+      position:relative;
+      z-index:1;
+    }
+
+    .step{ display:none; }
+    .step.active{ display:block; }
+
+    /* Welcome */
+    .welcome{
+      text-align:center;
+      user-select:none;
+      padding: 10px 0 0;
+    }
+    .mascot{
+      width:92px;height:92px;
+      margin: 0 auto;
+      border-radius: 28px;
+      background: rgba(255,255,255,0.72);
+      border: 1px solid var(--border);
+      box-shadow: 0 24px 60px rgba(2,6,23,0.14);
+      display:flex; align-items:center; justify-content:center;
+      overflow:hidden;
+    }
+    .mascot lottie-player{ width:110px; height:110px; }
+
+    .brand{
+      margin-top:18px;
+      font-weight: 950;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      font-size: 34px;
+      line-height: 1.05;
+    }
+    .subtitle{
+      margin-top:10px;
+      font-size: 14.5px;
+      font-weight: 500;
+      color: rgba(15,23,42,0.62);
+      letter-spacing: 0.1px;
+    }
+
+    .cta{
+      margin-top: 22px;
+      display:flex;
+      justify-content:center;
+    }
+    .btn{
+      border: none;
+      border-radius: 16px;
+      padding: 14px 18px;
+      background: var(--primary);
+      color: var(--primaryFg);
+      font-size: 15.5px;
+      font-weight: 700;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap: 10px;
+      box-shadow: 0 18px 42px rgba(59,130,246,0.20);
+    }
+    .btn:active{ transform: scale(0.985); }
+
+    /* Selection sheets */
+    .sheet{
+      margin-top: 18px;
+      border: 1px solid var(--border);
+      background: var(--glass);
+      border-radius: 22px;
+      padding: 18px;
+      box-shadow: 0 16px 44px rgba(2,6,23,0.10);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .sheet-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom: 10px;
+    }
+    .back-btn{
+      width:38px;height:38px;
+      border-radius: 14px;
+      border: 1px solid rgba(148,163,184,0.25);
+      background: rgba(255,255,255,0.72);
+      display:flex; align-items:center; justify-content:center;
+      cursor:pointer;
+      box-shadow: 0 10px 26px rgba(2,6,23,0.05);
+    }
+    .back-btn:active{ transform: scale(0.985); }
+    .progress{
+      font-size: 12px;
+      color: rgba(51,65,85,0.62);
+      letter-spacing: 0.2px;
+      user-select:none;
+    }
+
+    .title{
+      margin: 6px 0 6px;
+      font-size: 30px;
+      letter-spacing: -0.6px;
+      line-height: 1.08;
+      font-weight: 900;
+      color: rgba(15,23,42,0.92);
+    }
+    .desc{
+      margin: 0 0 14px;
+      color: rgba(15,23,42,0.62);
+      line-height: 1.5;
+      font-size: 15px;
+    }
+
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top: 6px;
+    }
+    .chip{
+      border:1px solid rgba(148,163,184,0.22);
+      background: rgba(255,255,255,0.78);
+      color: rgba(15,23,42,0.92);
+      border-radius: 16px;
+      padding: 12px 14px;
+      font-size: 16px;
+      cursor:pointer;
+      min-width: 72px;
+      text-align:center;
+      user-select:none;
+      font-weight: 700;
+      box-shadow: 0 12px 28px rgba(2,6,23,0.06);
+      transition: transform .12s ease, box-shadow .16s ease, border-color .16s ease, background .16s ease;
+    }
+    .chip:active{ transform: scale(0.985); }
+    .chip.sel{
+      border-color: rgba(37,99,235,0.35);
+      background: rgba(37,99,235,0.10);
+      box-shadow: 0 16px 36px rgba(37,99,235,0.10);
+    }
+
+    .actions{
+      margin-top: 16px;
+      display:flex;
+    }
+    .primary{
+      width:100%;
+      border:none;
+      border-radius: 16px;
+      padding: 14px 16px;
+      background: var(--primary);
+      color: var(--primaryFg);
+      font-weight: 800;
+      font-size: 15.5px;
+      cursor:pointer;
+      box-shadow: 0 18px 42px rgba(59,130,246,0.18);
+    }
+    .primary:disabled{ opacity: 0.55; cursor:not-allowed; box-shadow:none; }
+    .primary:active{ transform: scale(0.985); }
+
+    .tiny{
+      margin-top: 14px;
+      font-size: 12.5px;
+      color: rgba(15,23,42,0.55);
+      text-align:center;
+    }
+
+    @media (max-width:420px){
+      .brand{ font-size: 32px; }
+      .title{ font-size: 28px; }
+      .sheet{ padding: 16px; }
+    }
+  </style>
+    <!-- PWA & iOS meta -->
+    <meta name="mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+    <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192x192.png"/>
+    <link rel="manifest" href="manifest.json"/>
+</head>
+<body>
+<div class="wrap">
+<section aria-label="Welcome" class="step active welcome" id="s1">
+<div aria-hidden="true" class="mascot">
+<lottie-player autoplay="" background="transparent" loop="" speed="1" src="luma-main.json"></lottie-player>
+</div>
+<div class="brand">KNOWEASY AI</div>
+<div class="subtitle">Unleash the joy of effortless learning</div>
+<div class="cta" style="flex-direction:column; gap:10px;">
+  <button class="btn" id="startBtn" type="button">
+    Continue as Student
+    <svg aria-hidden="true" fill="none" height="18" viewbox="0 0 24 24" width="18">
+      <path d="M9 18l6-6-6-6" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"></path>
+    </svg>
+  </button>
+  <button class="btn" id="parentBtn" type="button" style="background: rgba(255,255,255,0.85); color: rgba(15,23,42,0.92); border: 1px solid var(--border); box-shadow: 0 14px 30px rgba(2,6,23,0.10);">
+    Login as Parent
+  </button>
+</div>
+</section>
+<section aria-label="Select class" class="step" id="s2">
+<div class="sheet">
+<div class="sheet-head">
+<button aria-label="Back" class="back-btn" id="backToWelcome" type="button">
+<svg aria-hidden="true" fill="none" height="18" viewbox="0 0 24 24" width="18">
+<path d="M15 18l-6-6 6-6" stroke="rgba(15,23,42,0.85)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"></path>
+</svg>
+</button>
+<div class="progress">Step 1 of 2</div>
+<div style="width:42px"></div>
+</div>
+<div class="title">Select your class</div>
+<div class="desc">We’ll match your syllabus and explanation depth.</div>
+<div class="row" id="classRow"></div>
+<div class="actions">
+<button class="primary" disabled="" id="nextToBoard" type="button">Next</button>
+</div>
+</div>
+</section>
+<section aria-label="Select board" class="step" id="s3">
+<div class="sheet">
+<div class="sheet-head">
+<button aria-label="Back" class="back-btn" id="backToClass" type="button">
+<svg aria-hidden="true" fill="none" height="18" viewbox="0 0 24 24" width="18">
+<path d="M15 18l-6-6 6-6" stroke="rgba(15,23,42,0.85)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"></path>
+</svg>
+</button>
+<div class="progress">Step 2 of 2</div>
+<div style="width:42px"></div>
+</div>
+<div class="title">Select your board</div>
+<div class="desc">Board is your base syllabus. Exams become depth modes later.</div>
+<div class="row" id="boardRow"></div>
+<div class="actions">
+<button class="primary" disabled="" id="continueBtn" type="button">Continue</button>
+</div>
+<div class="tiny">Saved on this device.</div>
+</div>
+</section>
+</div>
+<script>
+  const PROFILE_KEY = "knoweasy_student_profile_v1";
+
+  const params = new URLSearchParams(location.search || "");
+  const isEdit = params.get("edit") === "1";
+  const returnTo = params.get("return") || "index.html";
+
+  try {
+    if (!isEdit && localStorage.getItem(PROFILE_KEY)) {
+      window.location.href = "index.html";
+    }
+  } catch {}
+
+  const s1 = document.getElementById("s1");
+  const s2 = document.getElementById("s2");
+  const s3 = document.getElementById("s3");
+
+  const startBtn = document.getElementById("startBtn");
+  const parentBtn = document.getElementById("parentBtn");
+  const classRow = document.getElementById("classRow");
+  const boardRow = document.getElementById("boardRow");
+
+  // Parent entry point (no setup wizard)
+  if (parentBtn) {
+    parentBtn.addEventListener('click', () => {
+      window.location.href = 'login.html?role=parent&next=parent.html';
+    });
+  }
+  const nextToBoard = document.getElementById("nextToBoard");
+  const continueBtn = document.getElementById("continueBtn");
+  const backToWelcome = document.getElementById("backToWelcome");
+  const backToClass = document.getElementById("backToClass");
+
+  let chosenClass = null;
+  let chosenBoard = null;
+
+  const boardChipEls = [];
+
+  const CLASSES = ["5","6","7","8","9","10","11_12"];
+  const BOARDS = [
+    { label: "CBSE", value: "CBSE" },
+    { label: "Maharashtra", value: "Maharashtra" },
+    { label: "ICSE", value: "ICSE" },
+    { label: "Other", value: "Other" }
+  ];
+
+  function show(step){
+    [s1,s2,s3].forEach(x => x.classList.remove("active"));
+    step.classList.add("active");
+    window.scrollTo(0,0);
+  }
+
+  function chip(label, onClick){
+    const b = document.createElement("div");
+    b.className = "chip";
+    b.textContent = label;
+    b.onclick = () => onClick(b);
+    return b;
+  }
+
+  function markSelected(container, el){
+    [...container.children].forEach(c => c.classList.remove("sel"));
+    el.classList.add("sel");
+  }
+
+  function refreshBoardChips(){
+    const is1112 = String(chosenClass || "") === "11_12";
+    boardChipEls.forEach(({el, val}) => {
+      const isIcse = String(val).toLowerCase() === "icse";
+      el.style.display = (is1112 && isIcse) ? "none" : "inline-flex";
+    });
+
+    if (is1112 && String(chosenBoard || "").toLowerCase() === "icse") {
+      chosenBoard = null;
+      continueBtn.disabled = true;
+      [...boardRow.children].forEach(c => c.classList.remove("sel"));
+    }
+  }
+
+  CLASSES.forEach(v => {
+    const label = v === "11_12" ? "11–12" : v;
+    const el = chip(label, (self) => {
+      chosenClass = v;
+      markSelected(classRow, self);
+      nextToBoard.disabled = false;
+      refreshBoardChips();
+    });
+    classRow.appendChild(el);
+  });
+
+  BOARDS.forEach(({label, value}) => {
+    const el = chip(label, (self) => {
+      chosenBoard = value;
+      markSelected(boardRow, self);
+      continueBtn.disabled = false;
+    });
+    boardRow.appendChild(el);
+    boardChipEls.push({el, val:value});
+  });
+
+  refreshBoardChips();
+
+  if (startBtn) startBtn.onclick = () => show(s2);
+  if (backToWelcome) backToWelcome.onclick = () => show(s1);
+  if (backToClass) backToClass.onclick = () => show(s2);
+
+  if (nextToBoard) nextToBoard.onclick = () => {
+    if (!chosenClass) return;
+    show(s3);
+  };
+
+  function safeReadProfile(){
+    try {
+      const raw = localStorage.getItem(PROFILE_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch { return null; }
+  }
+
+  (function prefillIfEdit(){
+    if (!isEdit) return;
+    const p = safeReadProfile();
+    if (!p) return;
+
+    if (p.class) {
+      chosenClass = String(p.class);
+      [...classRow.children].forEach(c => {
+        if ((chosenClass === "11_12" && c.textContent.includes("11")) || c.textContent === chosenClass) c.classList.add("sel");
+      });
+      nextToBoard.disabled = !chosenClass;
+    }
+    refreshBoardChips();
+
+    if (p.board) {
+      chosenBoard = String(p.board);
+      [...boardRow.children].forEach(c => {
+        if (c.textContent === chosenBoard) c.classList.add("sel");
+      });
+      continueBtn.disabled = !chosenBoard;
+    }
+
+    show(s2);
+  })();
+
+  if (continueBtn) continueBtn.onclick = () => {
+    if (!chosenClass || !chosenBoard) return;
+    const profile = { class: chosenClass, board: chosenBoard, updatedAt: Date.now() };
+    try { localStorage.setItem(PROFILE_KEY, JSON.stringify(profile)); } catch {}
+    window.location.href = returnTo;
+  };
+</script>
+    <!-- Service worker registration is handled by sw-disable.js. Duplicate registration removed for stability. -->
+    <script src="sw-disable.js"></script>
+</body>
+</html>

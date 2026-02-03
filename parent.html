@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>KnowEasy OS – Parent Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <meta name="theme-color" content="#F8FAFC"/>
+  <link rel="manifest" href="manifest.json"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="parent.css"/>
+</head>
+
+<body class="has-app">
+<div class="app">
+
+  <header class="app-header">
+    
+    <button class="ghost-btn" id="parentBackBtn" type="button" aria-label="Back" title="Back">← Back</button>
+<div class="app-header__brand">
+      <div class="brand-logo">KE</div>
+      <div class="brand-text">
+        <div class="brand-title">Parent Dashboard</div>
+        <div class="brand-subtitle">Read-only analytics</div>
+        <div class="brand-meta" id="parentMeta">Linked students • Insights</div>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <button class="ghost-btn" id="switchRoleBtn" type="button" style="display:none;">Switch</button>
+      <button class="ghost-btn" id="loginBtn" type="button">Login</button>
+      <button class="ghost-btn" id="logoutTextBtn" type="button" style="display:none;">Logout</button>
+    </div>
+  </header>
+
+  <main class="app-main">
+    <section class="card" id="parentOnlyNotice" style="margin-top:14px; display:none;">
+      <p style="margin:0; font-weight:900;">This page is for parents</p>
+      <p style="margin:8px 0 0; opacity:0.85; line-height:1.45;">
+        Please log in with a parent account to view the Parent Dashboard.
+      </p>
+      <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
+        <button class="primary-btn" id="goToLoginBtn" type="button">Go to Login</button>
+        <button class="ghost-btn" id="goBackBtn" type="button">Back</button>
+      </div>
+    </section>
+
+
+    <section class="card" style="margin-top:12px;" id="accountCard">
+      <div id="authLine" style="font-size:14px; opacity:0.85; line-height:1.45;">Checking login…</div>
+    </section>
+
+    <section class="card" style="margin-top:12px;" id="linkCard">
+      <p style="margin:0; font-weight:900;">Link your child</p>
+      <p style="margin:8px 0 0; opacity:0.8; line-height:1.45;">
+        Enter the Parent Code shown inside your child’s <b>Me → Parent access</b>.
+      </p>
+      <div style="margin-top:12px;">
+        <label class="field-label">Parent Code</label>
+        <input id="codeInput" class="field-input" placeholder="KNE-XXXXXX" autocapitalize="characters"/>
+      </div>
+      <div style="display:flex; gap:10px; margin-top:12px;">
+        <button id="linkBtn" class="primary-btn" type="button">Link Student</button>
+        <button id="clearBtn" class="ghost-btn" type="button">Clear</button>
+      </div>
+      <div id="linkMsg" style="margin-top:10px; font-size:13px; line-height:1.45;"></div>
+    </section>
+
+    <section class="section" style="margin-top:14px; display:none;" id="studentsSection">
+      <div class="section-header">
+        <h2 class="section-title">Linked students</h2>
+      </div>
+      <div id="studentsList" class="parent-students"></div>
+    </section>
+
+    <section class="section" style="margin-top:14px; display:none;" id="analyticsSection">
+      <div class="section-header">
+        <h2 class="section-title">Insights</h2>
+      
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:6px;">
+          <div id="insights" style="font-size:13px; opacity:0.85;">Select a student to view insights.</div>
+          <div id="insightsUpdated" style="font-size:12px; opacity:0.70;"></div>
+          <button class="ghost-btn" id="backToStudentsBtn" type="button" style="margin-left:auto;">← Back to Students</button>
+        </div>
+      </div>
+      <div id="analyticsGrid" class="parent-analytics"></div>
+      <div class="card" style="margin-top:12px;">
+        <p style="margin:0; font-weight:900;">Recent activity</p>
+        <div id="activityList" style="margin-top:8px;"></div>
+      </div>
+    </section>
+
+    <div class="bottom-padding"></div>
+  </main>
+
+</div>
+
+<script src="core.js?v=20260203v3"></script>
+<script src="auth.js"></script>
+<script src="parent.js"></script>
+<script src="sw-disable.js"></script>
+</body>
+</html>

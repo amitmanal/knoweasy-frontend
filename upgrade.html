@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Upgrade • KnowEasy</title>
+  <link rel="stylesheet" href="styles.css?v=20260115a" />
+  <link rel="stylesheet" href="auth.css?v=20260115a" />
+  <link rel="icon" href="favicon.ico" />
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body>
+  <div class="page">
+    <div class="topbar">
+      <button class="back-btn" id="backBtn" aria-label="Back">←</button>
+      <div class="topbar-title">Upgrade</div>
+      <div style="width:44px"></div>
+    </div>
+
+    <div class="container" style="max-width:720px">
+      <div class="card" style="padding:16px">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+          <div>
+            <div style="font-weight:700;font-size:16px">Your plan</div>
+            <div id="planText" style="opacity:0.8;margin-top:2px">Loading…</div>
+            <div id="creditsText" style="opacity:0.75;margin-top:6px;font-size:13px">Credits: —</div>
+            <div id="validityText" style="opacity:0.75;margin-top:4px;font-size:13px">Validity: —</div>
+          </div>
+          <div id="planBadge" class="pill">—</div>
+        </div>
+      </div>
+
+      <div class="section" style="margin-top:14px">
+        <div class="section-title">AI Credit Booster Packs</div>
+        <div id="boosterList" class="grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px"></div>
+        <div class="card" style="padding:14px;margin-top:12px;opacity:0.88">
+          <div style="font-weight:800;display:flex;align-items:center;gap:8px">
+            Booster credits never expire
+            <span title="Usage order: Included credits are used first. Booster credits are used after included credits are finished." style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border:1px solid rgba(0,0,0,0.18);border-radius:999px;font-weight:900;font-size:12px;opacity:0.8;cursor:help">i</span>
+          </div>
+          <div style="margin-top:6px">They stack on top of your plan credits and are used <b>after</b> included credits.</div>
+        </div>
+      </div>
+
+      <div class="section" style="margin-top:14px">
+        <div class="section-title">Choose a plan</div>
+
+        <div class="card" style="padding:12px;margin-top:10px;display:flex;gap:10px;align-items:center;justify-content:space-between">
+          <div style="font-weight:700">Billing cycle</div>
+          <div style="display:flex;gap:10px;align-items:center">
+            <label style="display:flex;gap:6px;align-items:center;cursor:pointer;opacity:0.9">
+              <input id="cycleMonthly" type="radio" name="billingCycle" value="monthly" checked />
+              <span>Monthly</span>
+            </label>
+            <label style="display:flex;gap:6px;align-items:center;cursor:pointer;opacity:0.9">
+              <input id="cycleYearly" type="radio" name="billingCycle" value="yearly" />
+              <span>Yearly</span>
+            </label>
+          </div>
+        </div>
+
+        <div id="cycleHint" class="card" style="padding:12px;margin-top:10px;opacity:0.9;display:none">
+          <div style="font-weight:800">Billing cycle is locked (for safety)</div>
+          <div style="margin-top:6px">You have an active plan. Cycle changes apply at the next renewal to prevent double payments.</div>
+        </div>
+
+        <div class="grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px">
+          <div class="card" style="padding:16px">
+            <div style="font-weight:800">Free</div>
+            <div style="opacity:0.8;margin-top:6px">Core notes, mindmaps, PYQ, quizzes.</div>
+            <div style="margin-top:10px;opacity:0.9">₹0</div>
+            <button class="btn btn-secondary" style="width:100%;margin-top:12px" disabled>Current by default</button>
+          </div>
+
+          <div class="card" style="padding:16px">
+            <div style="font-weight:800">Pro</div>
+            <div style="opacity:0.8;margin-top:6px">Everything in Free + higher limits.</div>
+            <div id="proPriceText" style="margin-top:10px;opacity:0.9">Monthly</div>
+            <button class="btn" style="width:100%;margin-top:12px" data-plan="pro">Upgrade to Pro</button>
+          </div>
+
+          <div class="card" style="padding:16px">
+            <div style="font-weight:800">Max</div>
+            <div style="opacity:0.8;margin-top:6px">Everything in Pro + maximum limits.</div>
+            <div id="maxPriceText" style="margin-top:10px;opacity:0.9">Monthly</div>
+            <button class="btn" style="width:100%;margin-top:12px" data-plan="max">Upgrade to Max</button>
+          </div>
+        </div>
+
+        <div class="card" style="padding:14px;margin-top:12px;opacity:0.88">
+          <div style="font-weight:800">Billing clarity</div>
+          <div style="margin-top:6px; line-height:1.6">
+            <b>Plan access</b> is the time you can use Pro/Max features.<br/>
+            <b>Included credits</b> reset every billing cycle.<br/>
+            <b>Booster credits</b> never expire.
+          </div>
+          <details style="margin-top:10px;">
+            <summary style="cursor:pointer; font-weight:900;">What if payment fails?</summary>
+            <div style="margin-top:8px; opacity:0.82; font-size:13px; line-height:1.6">
+              No worries — if a payment is cancelled or fails, your plan stays unchanged. You can safely try again.
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <div id="msg" class="toast" style="display:none"></div>
+    </div>
+  </div>
+
+  <!-- Session helpers must load before upgrade.js -->
+  <script src="core.js?v=20260203v3"></script>
+  <script src="auth.js?v=20260115a"></script>
+  <!-- Load app bootstrap once to initialize navigation and role checks -->
+  <script src="app.js?v=20260203b"></script>
+  <!-- Page-specific logic for upgrade flows -->
+  <script src="upgrade.js?v=20260117c"></script>
+</body>
+</html>

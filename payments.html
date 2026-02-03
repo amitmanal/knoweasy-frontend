@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Payments • KnowEasy OS</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="has-app">
+<div class="app">
+
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand__logo">KE</div>
+      <div class="brand__text">
+        <div class="brand__title">KnowEasy OS</div>
+        <div class="brand__subtitle">Payment history • Receipts • Orders • Status</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-main">
+    <section class="section">
+      <div class="card">
+        <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:12px;">
+          <div>
+            <div class="card__title">Your payments</div>
+            <div class="card__subtitle">This list tracks successful payments and pending orders. If a payment fails or is cancelled, your plan does not change.</div>
+          </div>
+          <button class="btn btn--ghost" type="button" onclick="window.location.href='me.html'">← Back</button>
+        </div>
+
+        <div id="notStudent" class="notice" style="margin-top:14px; display:none;">Please login as a student to view payment history.</div>
+
+        <div id="loading" style="margin-top:14px; font-size:13px; opacity:0.75;">Loading…</div>
+        <div id="empty" style="margin-top:14px; display:none; font-size:13px; opacity:0.75;">No payments yet.</div>
+
+        <div id="list" style="margin-top:14px; display:none; overflow:auto;">
+          <table class="table" style="min-width: 880px;">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Plan / SKU</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Order ID</th>
+              </tr>
+            </thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <nav class="bottom-nav" aria-label="Primary">
+      <a class="bottom-nav__item" href="index.html">Home</a>
+      <a class="bottom-nav__item" href="study.html">Study</a>
+      <a class="bottom-nav__item" href="test.html">Test</a>
+      <a class="bottom-nav__item" href="me.html">Me</a>
+    </nav>
+  </main>
+
+</div>
+
+<!-- Auth must load before any page that calls KnowEasyAuth.apiFetch -->
+<script src="auth.js"></script>
+<script src="core.js?v=20260203v3"></script>
+<script src="payments.js"></script>
+</body>
+</html>

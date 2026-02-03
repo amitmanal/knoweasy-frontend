@@ -1,0 +1,70 @@
+/* Parent Dashboard — premium, calm, read-only */
+
+.parent-students{
+  display:grid;
+  grid-template-columns: 1fr;
+  gap:10px;
+}
+
+.parent-student{
+  padding:12px;
+  border-radius:16px;
+  border:1px solid rgba(148,163,184,0.22);
+  background: rgba(255,255,255,0.78);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 10px 26px rgba(2,6,23,0.08);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  cursor:pointer;
+  transition: transform .14s ease, box-shadow .14s ease;
+}
+
+.parent-student:active{
+  transform: scale(0.99);
+}
+
+.parent-student__name{ font-weight:900; }
+.parent-student__meta{ opacity:0.72; font-size:13px; margin-top:4px; }
+
+.parent-badge{
+  font-size:12px;
+  font-weight:900;
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid rgba(148,163,184,0.22);
+  background: rgba(248,250,252,0.85);
+}
+
+.parent-analytics{
+  display:grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap:10px;
+}
+
+.parent-metric{
+  border-radius:16px;
+  padding:12px;
+  border:1px solid rgba(148,163,184,0.22);
+  background: rgba(255,255,255,0.78);
+}
+
+.parent-metric__label{ font-size:12px; opacity:0.7; font-weight:800; }
+.parent-metric__value{ font-size:20px; font-weight:950; margin-top:6px; }
+.parent-metric__hint{ font-size:12px; opacity:0.72; margin-top:6px; line-height:1.35; }
+
+.parent-empty{
+  padding:12px;
+  border-radius:16px;
+  border:1px dashed rgba(148,163,184,0.35);
+  background: rgba(255,255,255,0.6);
+  opacity:0.85;
+  font-size:13px;
+  line-height:1.45;
+}
+
+@media (min-width: 520px){
+  .parent-analytics{ grid-template-columns: repeat(4, minmax(0,1fr)); }
+}

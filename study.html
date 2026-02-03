@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com" rel="preconnect"/>
+<meta charset="utf-8"/>
+<title>KnowEasy OS – Study Library</title>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<link href="styles.css" rel="stylesheet"/>
+<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+<style>
+    .luma-fab{
+      position: fixed; right: 14px; bottom: calc(92px + var(--safe-area-bottom));
+      width: 56px; height: 56px; border-radius: 18px;
+      border: 1px solid rgba(148,163,184,0.22);
+      background: rgba(255,255,255,0.78);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 14px 34px rgba(2,6,23,0.16), 0 0 0 1px rgba(255,255,255,0.28) inset;
+      display:flex; align-items:center; justify-content:center;
+      z-index:9999; cursor:pointer;
+      transition: transform .18s ease, box-shadow .18s ease, opacity .18s ease;
+      animation: ke-float 5.2s ease-in-out infinite;
+    }
+    .luma-fab:hover{ transform: translateY(-2px); box-shadow: 0 22px 50px rgba(2,6,23,0.18), 0 0 0 1px rgba(255,255,255,0.45) inset; }
+    .luma-fab:active{ transform: translateY(-1px) scale(0.98); }
+    .luma-fab img{ width: 28px; height: 28px; display:block; }
+    .luma-fab__dot{
+      position:absolute;
+      top:10px; right:10px;
+      width:10px; height:10px;
+      border-radius:999px;
+      background: radial-gradient(circle at 30% 30%, #a7f3d0, #22c55e);
+      box-shadow: 0 0 0 2px rgba(255,255,255,0.85), 0 8px 18px rgba(34,197,94,0.30);
+    }
+    /*
+      The floating animation keyframes are defined globally in styles.css. The
+      stray 50% rule here has been removed to avoid invalid CSS. See
+      styles.css for @keyframes ke-float.
+    */
+    @media (prefers-reduced-motion: reduce){
+      .luma-fab{ animation: none; }
+    }
+
+/* Mode + Exam UI */
+    .mode-bar { margin-top: 14px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .mode-toggle {
+      display: inline-flex; gap: 6px; padding: 6px;
+      border-radius: 999px; border: 1px solid rgba(148,163,184,0.35);
+      background: rgba(255,255,255,0.65); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 10px 26px rgba(2,6,23,0.10);
+    }
+    .mode-pill {
+      border: 0; padding: 8px 12px; border-radius: 999px;
+      background: transparent; cursor: pointer; font-weight: 600; font-size: 13px;
+      color: rgba(15,23,42,0.70); transition: transform 0.08s ease, background 0.12s ease;
+    }
+    .mode-pill:active { transform: scale(0.98); }
+    .mode-pill.is-active { background: rgba(15,23,42,0.90); color: white; }
+
+    .exam-row { display: none; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .exam-row.is-visible { display: inline-flex; }
+
+    .chip {
+      border: 1px solid rgba(148,163,184,0.35);
+      background: rgba(255,255,255,0.60);
+      border-radius: 999px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 12px;
+      color: rgba(15,23,42,0.75);
+      box-shadow: 0 10px 26px rgba(2,6,23,0.08);
+      user-select: none;
+    }
+    .chip.is-active {
+      background: rgba(59,130,246,0.15);
+      border-color: rgba(59,130,246,0.35);
+      color: rgba(30,64,175,0.95);
+    }
+    .chip.is-hidden { display:none; }
+
+    .context-row {
+      margin-top: 10px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .context-line { font-size: 12px; color: rgba(15,23,42,0.60); }
+    .context-link {
+      border:0; background:transparent;
+      font-size:12px; font-weight:700;
+      color: rgba(59,130,246,0.95);
+      cursor:pointer;
+      padding:0;
+    }
+    .badge-adv {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 999px;
+      background: rgba(245,158,11,0.14); border: 1px solid rgba(245,158,11,0.25);
+      color: rgba(146,64,14,0.95);
+      margin-left: 10px;
+      white-space: nowrap;
+    }
+
+    /* Setup modal (first time) */
+    .setup-overlay.hidden{ display:none; }
+    .setup-overlay{
+      position:fixed; inset:0; background: rgba(2,6,23,0.55);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      display:flex; align-items:center; justify-content:center;
+      z-index:10000;
+      padding:16px;
+    }
+    .setup-card{
+      width:min(520px, 92vw);
+      border-radius: 22px;
+      background: rgba(255,255,255,0.92);
+      border: 1px solid rgba(148,163,184,0.25);
+      box-shadow: 0 30px 80px rgba(2,6,23,0.30);
+      overflow:hidden;
+    }
+    .setup-head{
+      padding:16px 16px 10px;
+      border-bottom: 1px solid rgba(148,163,184,0.22);
+      display:flex; align-items:center; justify-content:space-between;
+      gap:10px;
+    }
+    .setup-title{ font-size:16px; font-weight:900; color: rgba(15,23,42,0.92); }
+    .setup-sub{ font-size:12px; color: rgba(15,23,42,0.60); margin-top:4px; }
+    .setup-body{ padding:14px 16px 16px; }
+    .setup-section{ margin-top:12px; }
+    .setup-label{ font-size:12px; font-weight:800; color: rgba(15,23,42,0.70); margin-bottom:8px; }
+    .setup-grid{ display:flex; flex-wrap:wrap; gap:8px; }
+    .setup-btn{
+      padding:10px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(148,163,184,0.35);
+      background: rgba(255,255,255,0.70);
+      font-weight:800;
+      font-size:12px;
+      cursor:pointer;
+    }
+    .setup-btn.is-active{
+      background: rgba(15,23,42,0.90);
+      color:white;
+      border-color: rgba(15,23,42,0.90);
+    }
+    .setup-foot{
+      padding:14px 16px;
+      border-top: 1px solid rgba(148,163,184,0.22);
+      display:flex; justify-content:flex-end; gap:10px;
+    }
+    .setup-primary{
+      padding:10px 14px;
+      border-radius: 14px;
+      border: 0;
+      background: rgba(59,130,246,0.95);
+      color:white;
+      font-weight:900;
+      cursor:pointer;
+    }
+    .setup-secondary{
+      padding:10px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(148,163,184,0.35);
+      background: rgba(255,255,255,0.70);
+      font-weight:900;
+      cursor:pointer;
+    }
+  </style>
+<meta content="#F8FAFC" name="theme-color"/>
+    <!-- PWA & iOS meta -->
+    <meta name="mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+    <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192x192.png"/>
+    <link rel="manifest" href="manifest.json"/>
+</head>
+<body class="has-app">
+<div class="app">
+<header class="app-header">
+<div class="app-header__brand">
+<div class="brand-logo">KE</div>
+<div class="brand-text">
+<div class="brand-title">KnowEasy OS</div>
+<div class="brand-subtitle">Study with Luma</div>
+<div class="brand-meta" id="profileMeta">Board • Class</div>
+</div>
+</div>
+<button class="app-header__profile-btn" onclick="window.location.href='me.html'" type="button">
+<span class="profile-avatar">A</span>
+</button>
+</header>
+<main class="app-main">
+<section class="study-topbar">
+<div>
+<p class="study-eyebrow">Study Library</p>
+<h1 class="study-title">Where do you want to start?</h1>
+<div class="mode-bar" id="modeBar">
+<div aria-label="Class year toggle" class="mode-toggle" id="yearToggleHost" role="tablist" style="display:none; margin-bottom:10px;">
+<button class="mode-pill" data-year="11" id="btnYear11" type="button">Class 11</button>
+<button class="mode-pill" data-year="12" id="btnYear12" type="button">Class 12</button>
+</div>
+<div aria-label="Study mode toggle" class="mode-toggle" role="tablist">
+<button class="mode-pill is-active" data-mode="boards" id="btnModeBoards" type="button">Boards</button>
+<button class="mode-pill" data-mode="entrance" id="btnModeEntrance" type="button">Entrance</button>
+</div>
+<!-- Board selector (clear CBSE vs Maharashtra) -->
+<div aria-label="Board selector" class="board-row" id="boardRow">
+<button class="chip is-active" data-board="cbse" type="button">CBSE</button>
+<button class="chip" data-board="msb" type="button">Maharashtra</button>
+<button class="chip is-hidden" data-board="icse" type="button">ICSE</button>
+</div>
+<div aria-label="Entrance exam selector" class="exam-row" id="examRow">
+<button class="chip is-active" data-exam="jee" type="button">JEE</button>
+<button class="chip" data-exam="neet" type="button">NEET</button>
+<button class="chip" data-exam="cet_engg" type="button">CET (PCM)</button>
+<button class="chip" data-exam="cet_med" type="button">CET (PCB)</button>
+</div>
+</div>
+<div class="context-row">
+<div class="context-line" id="contextLine">Loading…</div>
+</div>
+</div>
+<button class="study-filter-btn" id="btnTodayPlan" type="button">
+<span>Today’s plan</span>
+</button>
+</section>
+<section class="study-section">
+<div class="study-subject-row" id="subjectRow"></div>
+</section>
+<section class="card study-overview-card">
+<div class="study-overview-left">
+<p class="study-overview-label">Current subject</p>
+<h2 class="study-overview-title" id="study-subject-label">—</h2>
+<p class="study-overview-desc">
+            Luma will help you turn your weak chapters into your strongest scoring areas.
+          </p>
+<div class="study-overview-stats">
+<div class="study-overview-stat">
+<span class="study-overview-stat-number" id="stat-chapters-done">0</span>
+<span class="study-overview-stat-label">Chapters done</span>
+</div>
+<div class="study-overview-stat">
+<span class="study-overview-stat-number" id="stat-weak-chapters">0</span>
+<span class="study-overview-stat-label">Weak chapters</span>
+</div>
+</div>
+</div>
+<div class="study-overview-right">
+<div class="study-overview-pill">
+<span class="study-overview-pill-icon">🧠</span>
+<span class="study-overview-pill-text" id="overview-pill-text">Luma suggests: start with your weakest chapter.</span>
+</div>
+</div>
+</section>
+<!-- Ask Doubt card removed: Floating Luma button is the single global AI entry point. -->
+<section class="study-section">
+<div class="study-section-header">
+<h2 class="study-section-title" id="chapter-section-title">Chapters</h2>
+            <button class="study-small-link creator-only" id="btnViewAll" type="button">View all</button>
+</div>
+<div class="study-chapter-list" id="chapterList"></div>
+</section>
+<div class="bottom-padding"></div>
+</main>
+<button aria-label="Open Luma" class="luma-fab" onclick="window.location.href='chat.html'" type="button">
+<span class="luma-fab__dot"></span>
+<img alt="Chat icon" src="assets/nav-chat.svg"/>
+</button>
+<nav class="bottom-nav">
+  <!-- Added ARIA labels on buttons for improved accessibility -->
+  <button class="bottom-nav__item" onclick="window.location.href='index.html'" type="button" aria-label="Home">
+    <img alt="Home icon" class="nav-icon" src="assets/nav-home.svg"/>
+    <span class="bottom-nav__label">Home</span>
+  </button>
+  <button class="bottom-nav__item bottom-nav__item--active" onclick="window.location.href='study.html'" type="button" aria-label="Study">
+    <img alt="Study icon" class="nav-icon" src="assets/nav-study.svg"/>
+    <span class="bottom-nav__label">Study</span>
+  </button>
+  <button class="bottom-nav__item" onclick="window.location.href='test.html'" type="button" aria-label="Test">
+    <img alt="Test icon" class="nav-icon" src="assets/nav-test.svg"/>
+    <span class="bottom-nav__label">Test</span>
+  </button>
+  <button class="bottom-nav__item" onclick="window.location.href='me.html'" type="button" aria-label="Me">
+    <img alt="Me icon" class="nav-icon" src="assets/nav-me.svg"/>
+    <span class="bottom-nav__label">Me</span>
+  </button>
+</nav>
+</div>
+<!-- Setup modal -->
+<div aria-hidden="true" class="setup-overlay hidden" id="setupOverlay">
+<div class="setup-card">
+<div class="setup-head">
+<div>
+<div class="setup-title">Set your class &amp; board</div>
+<div class="setup-sub">You can change anytime.</div>
+</div>
+</div>
+<div class="setup-body">
+<div class="setup-section">
+<div class="setup-label">Class</div>
+<div class="setup-grid" id="setupClassGrid">
+<button class="setup-btn" data-class="5" type="button">Class 5</button>
+<button class="setup-btn" data-class="6" type="button">Class 6</button>
+<button class="setup-btn" data-class="7" type="button">Class 7</button>
+<button class="setup-btn" data-class="8" type="button">Class 8</button>
+<button class="setup-btn" data-class="9" type="button">Class 9</button>
+<button class="setup-btn" data-class="10" type="button">Class 10</button>
+<button class="setup-btn" data-class="11_12" type="button">Class 11+12</button>
+</div>
+</div>
+<div class="setup-section">
+<div class="setup-label">Board</div>
+<div class="setup-grid" id="setupBoardGrid">
+<button class="setup-btn" data-board="cbse" type="button">CBSE</button>
+<button class="setup-btn" data-board="msb" type="button">Maharashtra</button>
+<button class="setup-btn" data-board="icse" type="button">ICSE</button>
+</div>
+</div>
+</div>
+<div class="setup-foot">
+<button class="setup-secondary" id="setupCancel" type="button">Cancel</button>
+<button class="setup-primary" id="setupSave" type="button">Save</button>
+</div>
+</div>
+</div>
+<!-- PDF MODAL -->
+<div class="modal-overlay hidden" id="pdf-modal">
+<div class="modal">
+<div class="modal-header">
+<div class="modal-title" id="pdf-modal-title">Resource</div>
+<button class="modal-close" data-close-modal="" type="button">✕</button>
+</div>
+<div class="modal-body">
+<div class="pdf-view-wrapper hidden" id="pdf-view-wrapper">
+<iframe class="modal-pdf-frame" id="pdf-frame" src="" title="PDF viewer"></iframe>
+<div class="pdf-protect-overlay" id="pdf-protect-overlay">
+<div class="pdf-protect-label" id="pdf-protect-label">KnowEasy OS</div>
+</div>
+</div>
+<div class="pdf-empty hidden" id="pdf-empty">
+<div class="pdf-empty-heading" data-empty-heading="">Resource coming soon</div>
+<div class="pdf-empty-body" data-empty-body="">
+            We’ll add this PDF here soon. Till then, you can use Luma (Chat) to learn the same concept instantly.
+          </div>
+</div>
+<div class="pdf-actions">
+<button class="pdf-download-btn hidden" id="pdf-download-btn" type="button">Download</button>
+</div>
+</div>
+</div>
+</div>
+<!-- QUIZ MODAL -->
+<div class="modal-overlay hidden" id="quiz-modal">
+<div class="modal">
+<div class="modal-header">
+<div class="modal-title" id="quiz-modal-title">Quick quiz</div>
+<button class="modal-close" data-close-modal="" type="button">✕</button>
+</div>
+<div class="modal-body" id="quiz-container"></div>
+</div>
+</div>
+
+<!-- REVISION MODAL (AI Quick Recall / 1‑min) -->
+<div class="modal-overlay hidden" id="rev-modal" aria-hidden="true">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="rev-modal-title">Revision</div>
+      <button class="modal-close" data-close-modal="" type="button">✕</button>
+    </div>
+    <div class="modal-body" id="rev-modal-body"></div>
+  </div>
+</div>
+
+<!-- CHAPTER LIST MODAL (View all) -->
+<div aria-hidden="true" class="modal-overlay hidden" id="plan-modal">
+<div class="modal">
+<div class="modal-header">
+<div class="modal-title">Today’s plan</div>
+<button class="modal-close" data-close-modal="" type="button">✕</button>
+</div>
+<div class="modal-body" id="plan-modal-body"></div>
+</div>
+</div>
+<div aria-hidden="true" class="modal-overlay hidden" id="chapters-modal">
+<div class="modal">
+<div class="modal-header">
+<div class="modal-title" id="chapters-modal-title">Chapters</div>
+<button class="modal-close" data-close-modal="" type="button">✕</button>
+</div>
+<div class="modal-body">
+<div class="chapters-modal-meta" id="chapters-modal-meta"></div>
+<div class="chapters-tools" id="chapters-tools">
+<button class="chapters-tool-btn" id="chapters-check-btn" type="button">Check notes availability</button>
+<label class="chapters-toggle"><input id="chapters-missing-only" type="checkbox"/> Show missing only</label>
+<button class="chapters-tool-btn secondary" id="chapters-copy-missing" type="button">Copy missing list</button>
+<div class="chapters-status" id="chapters-status"></div>
+</div>
+<div class="chapters-list" id="chapters-modal-list"></div>
+<div class="chapters-modal-help">
+          Folder path format: <span class="mono">content/class_{N}/{board}/{subject}/{chapter_slug}/</span>
+</div>
+</div>
+</div>
+</div>
+<script src="core.js?v=20260203v3"></script>
+<script>
+    try { window.requireProfileOrRedirect && window.requireProfileOrRedirect("welcome.html"); } catch {}
+  </script>
+<script src="study.js?v=20260203v7"></script>
+<script src="app.js"></script>
+    <!-- Service worker registration is handled by sw-disable.js. Duplicate registration removed for stability. -->
+    <script src="sw-disable.js"></script>
+</body>
+</html>

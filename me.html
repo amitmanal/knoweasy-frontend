@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com" rel="preconnect"/>
+<meta charset="utf-8"/>
+<title>KnowEasy OS – Me</title>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<link href="styles.css" rel="stylesheet"/>
+<style>
+    .luma-fab{
+      position: fixed; right: 14px; bottom: calc(92px + var(--safe-area-bottom));
+      width: 56px; height: 56px; border-radius: 18px;
+      border: 1px solid rgba(148,163,184,0.22);
+      background: rgba(255,255,255,0.78);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 14px 34px rgba(2,6,23,0.16), 0 0 0 1px rgba(255,255,255,0.28) inset;
+      display:flex; align-items:center; justify-content:center;
+      z-index:9999; cursor:pointer;
+      transition: transform .18s ease, box-shadow .18s ease, opacity .18s ease;
+      animation: ke-float 5.2s ease-in-out infinite;
+    }
+    .luma-fab img{ width: 28px; height: 28px; display:block; }
+    .luma-fab__dot{
+      position:absolute; top:10px; right:10px;
+      width:10px; height:10px; border-radius:999px;
+      background: radial-gradient(circle at 30% 30%, #a7f3d0, #22c55e);
+      box-shadow: 0 0 0 2px rgba(255,255,255,0.8), 0 8px 18px rgba(34,197,94,0.35);
+    }
+  </style>
+<meta content="#F8FAFC" name="theme-color"/>
+    <!-- PWA & iOS meta -->
+    <meta name="mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+    <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192x192.png"/>
+    <link rel="manifest" href="manifest.json"/>
+</head>
+<body class="has-app">
+<div class="app">
+<header class="app-header">
+<div class="app-header__brand">
+<div class="brand-logo">KE</div>
+<div class="brand-text">
+<div class="brand-title">KnowEasy OS</div>
+      <div class="brand-subtitle" id="meSubtitle">Profile • My Space</div>
+<div class="brand-meta" id="profileMeta">Board • Class</div>
+</div>
+</div>
+<button class="app-header__profile-btn" onclick="window.location.href='index.html'" type="button">
+<span class="profile-avatar">A</span>
+</button>
+</header>
+<main class="app-main">
+<section class="card" style="margin-top: 14px;">
+<p style="margin:0; font-weight: 800;">Your profile</p>
+<p style="margin:8px 0 0; opacity:0.8; line-height:1.45;">
+          Board/Class settings are managed from the onboarding flow. Parent dashboard + My Space will live here.
+        </p>
+<div style="display:flex; gap:10px; margin-top: 12px; flex-wrap: wrap;">
+<button class="hero-cta" onclick="window.location.href='welcome.html?edit=1&return=me.html'" style="width:auto; padding: 10px 14px;" type="button">
+<span class="hero-cta__icon">⚙️</span>
+<span>Manage profile</span>
+</button>
+
+<button class="hero-cta" id="resetProfileBtn" style="width:auto; padding: 10px 14px; background: rgba(255,255,255,0.7); color: rgba(15,23,42,0.86);" type="button">
+<span class="hero-cta__icon">↩️</span>
+<span>Reset profile</span>
+</button>
+
+<button class="hero-cta" id="goUpgradeBtn" style="width:auto; padding: 10px 14px; background: rgba(15,23,42,0.86); color: #fff;" type="button">
+  <span class="hero-cta__icon">⚡</span>
+  <span>Upgrade</span>
+</button>
+
+<button class="hero-cta" onclick="window.location.href='library.html'" style="width:auto; padding: 10px 14px; background: rgba(255,255,255,0.7); color: rgba(15,23,42,0.86);" type="button">
+  <span class="hero-cta__icon">📚</span>
+  <span>My Library</span>
+</button>
+
+
+</div>
+</section>
+
+<!-- Billing & Usage (Trust layer) -->
+<section class="card" id="billingUsageCard" style="margin-top:12px;">
+  <p style="margin:0; font-weight:800;">Billing &amp; AI credits</p>
+  <p style="margin:8px 0 0; opacity:0.8; line-height:1.45;">
+    Your plan, access period, and credits — always visible.
+  </p>
+
+  <div id="billingSummary" style="margin-top:10px;"></div>
+
+  <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
+    <button id="billingBuyBoosterBtn" class="ghost-btn" type="button">Buy Booster</button>
+    <button id="billingUpgradeBtn" class="primary-btn" type="button">Upgrade Plan</button>
+    <button id="billingHistoryBtn" class="ghost-btn" type="button">Payment History</button>
+  </div>
+  <div id="billingMsg" style="margin-top:10px; font-size:13px; line-height:1.45;"></div>
+</section>
+
+<!-- Phase-1: Student Profile (account-level, synced later) -->
+<section class="card" id="studentProfileCard" style="margin-top:12px;">
+  <p style="margin:0; font-weight:800;">Student profile</p>
+  <p id="studentProfileHint" style="margin:8px 0 0; opacity:0.8; line-height:1.45;">
+    Your name helps parents recognize the right account. Goals stay private.
+  </p>
+  <div id="studentProfileSummary" style="margin-top:10px;"></div>
+  <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
+    <button id="editStudentProfileBtn" class="primary-btn" type="button">Edit</button>
+    <button id="clearStudentProfileBtn" class="ghost-btn" type="button">Clear</button>
+  </div>
+</section>
+
+<!-- Phase-1: Parent Access (student generates link code) -->
+<section class="card" id="parentAccessCard" style="margin-top:12px;">
+  <p style="margin:0; font-weight:800;">Parent access</p>
+  <!-- Updated microcopy: emphasise privacy and calm tone -->
+  <p style="margin:8px 0 0; opacity:0.8; line-height:1.45;">
+    Read‑only • No chats • Privacy‑safe
+  </p>
+  <div id="parentCodeBox" class="hidden" style="margin-top:10px;">
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+      <div>
+        <div style="font-weight:950; font-size:18px; letter-spacing:0.8px;" id="parentCodeText">KNE-XXXXXX</div>
+        <div style="opacity:0.72; font-size:12px; margin-top:4px;" id="parentCodeMeta">Valid for 15 minutes</div>
+      </div>
+      <button id="copyParentCodeBtn" class="ghost-btn" type="button">Copy</button>
+    </div>
+  </div>
+  <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
+    <!-- Buttons renamed per CEO spec -->
+    <button id="generateParentCodeBtn" class="primary-btn" type="button">Link Parent</button>
+</div>
+  <div id="parentCodeMsg" style="margin-top:10px; font-size:13px; line-height:1.45;"></div>
+</section>
+<section class="section" style="margin-top: 14px;">
+<div class="section-header">
+<h2 class="section-title">My Space (coming next)</h2>
+</div>
+<div class="quick-grid">
+<button class="quick-card" onclick="toast('Focus Timer will be added in My Space step.')" type="button">
+<div class="quick-icon"><span style="font-size:20px;">⏳</span></div>
+<div class="quick-title">Focus Timer</div>
+<div class="quick-subtitle">Pomodoro sessions</div>
+</button>
+<button class="quick-card" onclick="openTasksModal()" type="button">
+<div class="quick-icon"><span style="font-size:20px;">✅</span></div>
+<div class="quick-title">Daily Tasks</div>
+<div class="quick-subtitle">Plan your day</div>
+</button>
+<button class="quick-card" onclick="toast('AI Timetable Generator will be added after My Space foundation.')" type="button">
+<div class="quick-icon"><span style="font-size:20px;">🗓️</span></div>
+<div class="quick-title">AI Timetable</div>
+<div class="quick-subtitle">Personal schedule</div>
+</button>
+</div>
+</section>
+<!-- Daily Tasks Modal (simple checklist stored in localStorage) -->
+<div class="modal-overlay hidden" id="tasks-modal" aria-hidden="true">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Daily Tasks</div>
+      <button class="modal-close" data-close-modal type="button">✕</button>
+    </div>
+    <div class="modal-body">
+      <ul id="tasks-list" class="tasks-list"></ul>
+      <div style="display:flex; gap:6px; margin-top:10px;">
+        <input type="text" id="new-task-input" placeholder="Add a new task" style="flex:1; padding:8px 10px; border-radius:12px; border:1px solid rgba(148,163,184,0.3); font-size:13px;" />
+        <button type="button" id="add-task-btn" style="padding:8px 14px; border:none; border-radius:12px; background:rgba(15,23,42,0.92); color:white; font-size:13px; font-weight:800; cursor:pointer;">Add</button>
+      </div>
+      <div id="tasks-empty" style="display:none; font-size:12px; color:rgba(15,23,42,0.7); margin-top:8px;">No tasks yet. Add one above.</div>
+    </div>
+  </div>
+</div>
+<div class="bottom-padding"></div>
+</main>
+
+<!-- Student Profile Modal -->
+<div class="modal-overlay hidden" id="student-profile-modal" aria-hidden="true">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Student profile</div>
+      <button class="modal-close" data-close-student-profile type="button">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="margin-top:4px;">
+        <label class="field-label">Full name</label>
+        <input id="sp-name" class="field-input" placeholder="Your name"/>
+      </div>
+      <div style="margin-top:10px;">
+        <label class="field-label">Class & board (from onboarding)</label>
+        <input id="sp-class" class="field-input" readonly placeholder="Set in Manage profile"/>
+      </div>
+      <div style="margin-top:10px;">
+        <label class="field-label">Target exams</label>
+        <input id="sp-exams" class="field-input" placeholder="JEE, NEET, CET"/>
+      </div>
+      <p style="margin:10px 0 0; opacity:0.75; font-size:12px; line-height:1.45;">
+        This stays private. Parents only see summaries, not personal notes or chats.
+      </p>
+      <div style="display:flex; gap:10px; margin-top:12px;">
+        <button id="sp-save" class="primary-btn" type="button">Save</button>
+        <button id="sp-cancel" class="ghost-btn" type="button">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Floating Luma Button -->
+<button aria-label="Open Luma" class="luma-fab" onclick="window.location.href='chat.html'" type="button">
+<span class="luma-fab__dot"></span>
+<img alt="" src="assets/nav-chat.svg"/>
+</button>
+<!-- BOTTOM NAV (4 tabs ONLY) -->
+<nav class="bottom-nav">
+  <!-- Added ARIA labels on buttons for improved accessibility -->
+  <button class="bottom-nav__item" onclick="window.location.href='index.html'" type="button" aria-label="Home">
+    <img alt="Home icon" class="nav-icon" src="assets/nav-home.svg"/>
+    <span class="bottom-nav__label">Home</span>
+  </button>
+  <button class="bottom-nav__item" onclick="window.location.href='study.html'" type="button" aria-label="Study">
+    <img alt="Study icon" class="nav-icon" src="assets/nav-study.svg"/>
+    <span class="bottom-nav__label">Study</span>
+  </button>
+  <button class="bottom-nav__item" onclick="window.location.href='test.html'" type="button" aria-label="Test">
+    <img alt="Test icon" class="nav-icon" src="assets/nav-test.svg"/>
+    <span class="bottom-nav__label">Test</span>
+  </button>
+  <button class="bottom-nav__item bottom-nav__item--active" type="button" aria-label="Me">
+    <img alt="Me icon" class="nav-icon" src="assets/nav-me.svg"/>
+    <span class="bottom-nav__label">Me</span>
+  </button>
+</nav>
+</div>
+<script src="core.js?v=20260203v3"></script>
+<script src="auth.js"></script>
+    <script src="pwa-install.js"></script>
+<script>
+    try { window.requireProfileOrRedirect && window.requireProfileOrRedirect("welcome.html"); } catch {}
+  </script>
+<script src="study.js"></script>
+    <!-- Me page enhancements: Daily tasks checklist -->
+    <script src="me.js?v=20260117c"></script>
+<script src="app.js"></script>
+    <!-- Service worker registration is handled by sw-disable.js. Duplicate registration removed for stability. -->
+    <script src="sw-disable.js"></script>
+<script>
+(function(){
+  const meta = document.getElementById('profileMeta');
+  // Insert login card at top of main
+  const main = document.querySelector('main.app-main');
+  if(main){
+    const card = document.createElement('section');
+    card.className = 'card';
+    card.style.marginTop = '14px';
+    card.innerHTML = `
+      <p style="margin:0; font-weight:800;">Account</p>
+      <div id="acctBox" style="margin-top:10px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+        <div>
+          <div id="acctLine1" style="font-weight:900;">Not logged in</div>
+          <div id="acctLine2" style="opacity:0.75; font-size:13px; margin-top:4px;">Login to unlock subscriptions & dashboards (coming soon).</div>
+        </div>
+        <div style="display:flex; gap:10px;">
+          <button id="loginBtn" class="primary-btn" type="button">Login</button>
+          <button id="logoutBtn" class="ghost-btn hidden" type="button">Logout</button>
+        </div>
+      </div>
+    `;
+    main.insertBefore(card, main.firstChild);
+  }
+
+  function setLoggedOut(){
+    const l1 = document.getElementById('acctLine1');
+    const l2 = document.getElementById('acctLine2');
+    const loginBtn = document.getElementById('loginBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    if(l1) l1.textContent = 'Not logged in';
+    if(l2) l2.textContent = 'Login to unlock subscriptions & dashboards (coming soon).';
+    if(loginBtn) loginBtn.classList.remove('hidden');
+    if(logoutBtn) logoutBtn.classList.add('hidden');
+  }
+
+  function setLoggedIn(u){
+    const l1 = document.getElementById('acctLine1');
+    const l2 = document.getElementById('acctLine2');
+    const loginBtn = document.getElementById('loginBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    if(l1) l1.textContent = u.email || 'Logged in';
+    if(l2) l2.textContent = 'Role: ' + (u.role || 'student');
+    if(loginBtn) loginBtn.classList.add('hidden');
+    if(logoutBtn) logoutBtn.classList.remove('hidden');
+  }
+
+  document.addEventListener('click', async (e)=>{
+    if(e.target && e.target.id==='loginBtn'){
+      window.location.href = 'login.html?role=student&next=me.html';
+    }
+    if(e.target && e.target.id==='logoutBtn'){
+      await window.KnowEasyAuth.logout();
+      setLoggedOut();
+    }
+  });
+
+  (async function init(){
+    try{
+      const u = await window.KnowEasyAuth.fetchMe();
+      if(u){
+        window.KnowEasyAuth.setUser(u);
+        setLoggedIn(u);
+      }else{
+        setLoggedOut();
+      }
+    }catch(err){
+      setLoggedOut();
+    }
+  })();
+})();
+</script>
+</body>
+</html>

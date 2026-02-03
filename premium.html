@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KnowEasy Premium Mentor</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="premium-theme.css" />
+  <style>
+    /* Minimal additional styling for the premium page */
+    .premium-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .premium-container h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .premium-field {
+      margin-bottom: 16px;
+    }
+    .premium-field label {
+      display: block;
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+    .premium-field input, .premium-field select, .premium-field textarea {
+      width: 100%;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      font-size: 14px;
+    }
+    .premium-actions {
+      text-align: right;
+    }
+    .premium-actions button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      background: #1e90ff;
+      color: #fff;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .answer-card {
+      margin-top: 20px;
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(6px);
+    }
+    .answer-card h2 {
+      margin-top: 0;
+    }
+    .answer-section {
+      margin-bottom: 12px;
+    }
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .chip {
+      padding: 6px 12px;
+      border-radius: 16px;
+      background: #eef2ff;
+      color: #374fc7;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="premium-container">
+    <h1>KnowEasy Premium Mentor</h1>
+    <div class="premium-field">
+      <label for="questionInput">Your question</label>
+      <textarea id="questionInput" rows="3" placeholder="Enter your question here..."></textarea>
+    </div>
+    <div class="premium-field">
+      <label for="modeSelect">Answer mode</label>
+      <select id="modeSelect">
+        <option value="lite" selected>Luma Lite</option>
+        <option value="tutor">Luma Tutor</option>
+        <option value="mastery">Luma Mastery</option>
+      </select>
+    </div>
+    <div class="premium-field">
+      <label for="boardSelect">Board</label>
+      <select id="boardSelect">
+        <option value="CBSE" selected>CBSE</option>
+        <option value="MH">Maharashtra</option>
+        <option value="ICSE">ICSE</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
+    <div class="premium-field">
+      <label for="classSelect">Class level</label>
+      <select id="classSelect">
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10" selected>10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+      </select>
+    </div>
+    <div class="premium-field">
+      <label for="subjectSelect">Subject</label>
+      <select id="subjectSelect">
+        <option value="">Select subject (optional)</option>
+        <option value="maths">Maths</option>
+        <option value="physics">Physics</option>
+        <option value="chemistry">Chemistry</option>
+        <option value="biology">Biology</option>
+        <option value="history">History</option>
+        <option value="geography">Geography</option>
+        <option value="english">English</option>
+        <option value="science">Science</option>
+      </select>
+    </div>
+    <div class="premium-actions">
+      <button id="askBtn">Ask</button>
+    </div>
+    <div id="answerContainer"></div>
+  </div>
+  <script src="core.js?v=20260203v3"></script>
+<script src="auth.js"></script>
+<script src="premium-renderer.js"></script>
+<script src="premium.js"></script>
+</body>
+</html>

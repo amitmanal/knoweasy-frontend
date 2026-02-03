@@ -1,0 +1,19 @@
+{
+  "api_root": "https://knoweasy-engine-api.onrender.com",
+  "api_base_url": "https://knoweasy-engine-api.onrender.com",
+  "solve_path": "/v1/ai/answer",
+  "health_path": "/health",
+  "pdf_path": "/export/pdf",
+  "send_context": false,
+  "default_subject": "Chemistry",
+  "net_timeout_ms": 45000,
+  "net_retries": 3,
+  "chat_rl_per_min": 12,
+  "chat_rl_burst": 3,
+  "chat_cache_ttl_ms": 3600000,
+  "chat_cache_max": 40,
+  "chat_circuit_fail_threshold": 3,
+  "chat_circuit_open_ms": 30000,
+  "client_version": "step4_answerobject_onebrain_v3",
+  "request_timeout_ms": 45000
+}

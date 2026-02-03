@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com" rel="preconnect"/>
+<meta charset="utf-8"/>
+<title>KnowEasy OS – Tests</title>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<link href="styles.css" rel="stylesheet"/>
+<style>
+    .luma-fab{
+      position: fixed; right: 14px; bottom: calc(92px + var(--safe-area-bottom));
+      width: 56px; height: 56px; border-radius: 18px;
+      border: 1px solid rgba(148,163,184,0.22);
+      background: rgba(255,255,255,0.78);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 14px 34px rgba(2,6,23,0.16), 0 0 0 1px rgba(255,255,255,0.28) inset;
+      display:flex; align-items:center; justify-content:center;
+      z-index:9999; cursor:pointer;
+      transition: transform .18s ease, box-shadow .18s ease, opacity .18s ease;
+      animation: ke-float 5.2s ease-in-out infinite;
+    }
+    .luma-fab img{ width: 28px; height: 28px; display:block; }
+    .luma-fab__dot{
+      position:absolute; top:10px; right:10px;
+      width:10px; height:10px; border-radius:999px;
+      background: radial-gradient(circle at 30% 30%, #a7f3d0, #22c55e);
+      box-shadow: 0 0 0 2px rgba(255,255,255,0.8), 0 8px 18px rgba(34,197,94,0.35);
+    }
+  </style>
+<meta content="#F8FAFC" name="theme-color"/>
+    <!-- PWA & iOS meta -->
+    <meta name="mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+    <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192x192.png"/>
+    <link rel="manifest" href="manifest.json"/>
+</head>
+<body class="has-app">
+<div class="app">
+<header class="app-header">
+<div class="app-header__brand">
+<div class="brand-logo">KE</div>
+<div class="brand-text">
+<div class="brand-title">KnowEasy OS</div>
+<div class="brand-subtitle">Test • Analyze • Improve</div>
+<div class="brand-meta" id="profileMeta">Board • Class</div>
+</div>
+</div>
+<button class="app-header__profile-btn" onclick="window.location.href='me.html'" type="button">
+<span class="profile-avatar">A</span>
+</button>
+</header>
+<main class="app-main">
+<section class="card" style="margin-top: 14px;">
+<p style="margin:0; font-weight: 800;">Tests (v1)</p>
+<p style="margin:8px 0 0; opacity:0.8; line-height:1.45;">
+          This section will host chapter tests, timed mock tests, and PYQ simulator.
+          For now, we’re stabilizing structure first.
+        </p>
+</section>
+<section class="section" style="margin-top: 14px;">
+<div class="section-header">
+<h2 class="section-title">Quick actions</h2>
+</div>
+<div class="quick-grid">
+<button class="quick-card" onclick="toast('Chapter test engine will be enabled in Step 6.')" type="button">
+<div class="quick-icon"><span style="font-size:20px;">🧪</span></div>
+<div class="quick-title">Chapter Test</div>
+<div class="quick-subtitle">10–20 questions</div>
+</button>
+<button class="quick-card" onclick="toast('Mock test mode will be enabled after chapter tests.')" type="button">
+<div class="quick-icon"><span style="font-size:20px;">⏱️</span></div>
+<div class="quick-title">Timed Mock</div>
+<div class="quick-subtitle">Exam-style timer</div>
+</button>
+<button class="quick-card" onclick="toast('PYQ Simulator is a Max feature (Step 7).')" type="button">
+<div class="quick-icon"><span style="font-size:20px;">📄</span></div>
+<div class="quick-title">PYQ Simulator</div>
+<div class="quick-subtitle">Real exam feel</div>
+</button>
+<button class="quick-card" onclick="window.location.href='chat.html'" type="button">
+<div class="quick-icon"><span style="font-size:20px;">✨</span></div>
+<div class="quick-title">Ask Luma</div>
+<div class="quick-subtitle">Get guidance</div>
+</button>
+</div>
+</section>
+<div class="bottom-padding"></div>
+</main>
+<!-- Floating Luma Button -->
+<button aria-label="Open Luma" class="luma-fab" onclick="window.location.href='chat.html'" type="button">
+<span class="luma-fab__dot"></span>
+<img alt="Chat icon" src="assets/nav-chat.svg"/>
+</button>
+<!-- BOTTOM NAV (4 tabs ONLY) -->
+<nav class="bottom-nav">
+  <!-- Added ARIA labels on buttons for improved accessibility -->
+  <button class="bottom-nav__item" onclick="window.location.href='index.html'" type="button" aria-label="Home">
+    <img alt="Home icon" class="nav-icon" src="assets/nav-home.svg"/>
+    <span class="bottom-nav__label">Home</span>
+  </button>
+  <button class="bottom-nav__item" onclick="window.location.href='study.html'" type="button" aria-label="Study">
+    <img alt="Study icon" class="nav-icon" src="assets/nav-study.svg"/>
+    <span class="bottom-nav__label">Study</span>
+  </button>
+  <button class="bottom-nav__item bottom-nav__item--active" type="button" aria-label="Test">
+    <img alt="Test icon" class="nav-icon" src="assets/nav-test.svg"/>
+    <span class="bottom-nav__label">Test</span>
+  </button>
+  <button class="bottom-nav__item" onclick="window.location.href='me.html'" type="button" aria-label="Me">
+    <img alt="Me icon" class="nav-icon" src="assets/nav-me.svg"/>
+    <span class="bottom-nav__label">Me</span>
+  </button>
+</nav>
+</div>
+<script src="core.js"></script>
+<script>
+    try { window.requireProfileOrRedirect && window.requireProfileOrRedirect("welcome.html"); } catch {}
+  </script>
+<script src="study.js"></script>
+<script src="app.js"></script>
+    <!-- Service worker registration is handled by sw-disable.js. Duplicate registration removed for stability. -->
+    <script src="sw-disable.js"></script>
+</body>
+</html>

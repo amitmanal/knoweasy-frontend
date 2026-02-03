@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com" rel="preconnect"/>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>KnowEasy OS — Ask Doubt</title>
+<link href="favicon.ico" rel="icon"/>
+<link href="styles.css" rel="stylesheet"/>
+<meta content="#F8FAFC" name="theme-color"/>
+    <!-- PWA & iOS meta -->
+    <meta name="mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+    <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192x192.png"/>
+    <link rel="manifest" href="manifest.json"/>
+</head>
+<body class="has-app">
+<div class="app chat-page">
+    <header class="app-header">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div class="app-header__brand">
+          <div class="brand-logo">KE</div>
+          <div class="brand-text">
+            <div class="brand-title">KnowEasy OS</div>
+            <div class="brand-subtitle" data-i18n="chatSubtitle">Ask Doubt • Exam-safe</div>
+            <div class="brand-meta" id="profileMeta">Board • Class</div>
+          </div>
+        </div>
+        <!-- Language selector -->
+        <select id="keLangSelect" class="lang-select" aria-label="Language">
+          <option value="en">EN</option>
+          <option value="hi">हिन्दी</option>
+          <option value="mr">मराठी</option>
+        </select>
+      </div>
+      <button class="app-header__profile-btn" onclick="window.location.href='me.html'" type="button">
+        <span class="profile-avatar">A</span>
+      </button>
+    </header>
+<main class="app-main">
+<section class="card chat-card">
+<div class="chat-card__top">
+<div>
+<h1 class="chat-title" data-i18n="askYourDoubt">Ask your doubt</h1>
+<p class="chat-sub" data-i18n="typeYourQuestion">Type your question. We’ll send it to your engine API and show the final answer + key steps.</p>
+</div>
+<div aria-live="polite" class="chat-api">
+<span class="chat-dot" id="apiDot"></span>
+<span class="chat-api__text" id="apiText">API: checking…</span>
+</div>
+  <div class="chat-profile" id="profilePill" style="margin:10px 0 14px 0; font-size:13px; opacity:.85;"></div>
+
+
+<!-- Removed board/class/subject selectors per premium mentor specification. Profile information is inferred silently. -->
+<div class="chat-field chat-field--full">
+<label class="chat-label" for="q">Your question</label>
+
+<!-- Premium: Answer mode (shown for paid users) -->
+<div class="ke-answer-mode" id="answerModeWrap" style="margin:10px 0 6px 0; display:none;">
+  <div class="ke-seg" role="group" aria-label="Answer mode">
+    <button class="ke-seg__btn ke-seg__btn--active" type="button" data-mode="lite" id="modeLite">Luma Lite</button>
+    <button class="ke-seg__btn" type="button" data-mode="tutor" id="modeTutor">Luma Tutor</button>
+    <button class="ke-seg__btn" type="button" data-mode="mastery" id="modeMastery">Luma Mastery</button>
+  </div>
+  <div class="ke-answer-hint" id="answerModeHint" style="margin-top:6px; font-size:12px; opacity:0.75;">
+    Lite is fastest clarity. Tutor teaches step-by-step. Mastery is deeper and exam-ready (age-safe).
+  </div>
+</div>
+
+
+<div class="ke-toggles" style="display:flex; gap:14px; align-items:center; margin:8px 0 10px 0; font-size:12px; opacity:.85;">
+  <label style="display:flex; gap:8px; align-items:center; cursor:pointer;">
+    <input type="checkbox" id="privateSessionToggle"/>
+    <span>Private session</span>
+  </label>
+  <label style="display:flex; gap:8px; align-items:center; cursor:pointer;">
+    <input type="checkbox" id="rememberToggle"/>
+    <span>Remember learning (opt-in)</span>
+  </label>
+  <button class="chat-btn" id="historyBtn" type="button" style="margin-left:auto;">History</button>
+</div>
+
+    <!-- File upload field (optional) -->
+    <div class="ke-upload" style="margin:10px 0;">
+      <label class="chat-label" for="fileInput">Upload image or PDF (optional)</label>
+      <input type="file" id="fileInput" accept="image/*,application/pdf" class="chat-input" />
+    </div>
+
+<!-- History modal (calm, minimal) -->
+<div id="historyModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.25); z-index:9999;">
+  <div style="position:absolute; left:50%; top:10%; transform:translateX(-50%); width:min(720px,92vw); max-height:78vh; overflow:auto; background:rgba(255,255,255,.92); backdrop-filter: blur(12px); border-radius:18px; padding:16px; box-shadow: 0 10px 30px rgba(0,0,0,.12);">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <div style="font-weight:700;">Your history</div>
+      <div style="margin-left:auto; display:flex; gap:8px;">
+        <button class="chat-btn" id="historyClearBtn" type="button">Clear</button>
+        <button class="chat-btn" id="historyCloseBtn" type="button">Close</button>
+      </div>
+    </div>
+    <div style="height:10px;"></div>
+    <div id="historyList" style="display:flex; flex-direction:column; gap:10px;"></div>
+    <div style="height:6px;"></div>
+    <div style="font-size:12px; opacity:.75;">History auto-deletes based on your retention setting (default 14 days). Private session won’t be saved.</div>
+  </div>
+</div>
+
+<textarea class="chat-textarea" id="q" placeholder="Example: Benzaldehyde + Tollens reagent gives?" rows="4"></textarea>
+<div class="chat-actions">
+<button class="chat-btn chat-btn--primary" id="solveBtn" type="button" data-i18n="solve">Solve</button>
+<button class="chat-btn" id="clearBtn" type="button" data-i18n="clear">Clear</button>
+<button class="chat-btn" id="copyBtn" type="button" data-i18n="copy">Copy</button>
+</div>
+</div>
+<div aria-live="polite" class="chat-result" id="result"></div>
+</section>
+</main>
+<nav class="bottom-nav">
+  <!-- Added ARIA labels on buttons for improved accessibility -->
+  <button class="bottom-nav__item" onclick="window.location.href='index.html'" type="button" aria-label="Home">
+    <img alt="Home icon" class="nav-icon" src="assets/nav-home.svg"/>
+    <span class="bottom-nav__label" data-i18n="navHome">Home</span>
+  </button>
+  <button class="bottom-nav__item" onclick="window.location.href='study.html'" type="button" aria-label="Study">
+    <img alt="Study icon" class="nav-icon" src="assets/nav-study.svg"/>
+    <span class="bottom-nav__label" data-i18n="navStudy">Study</span>
+  </button>
+  <button class="bottom-nav__item bottom-nav__item--active" onclick="window.location.href='chat.html'" type="button" aria-label="Chat">
+    <img alt="Chat icon" class="nav-icon" src="assets/nav-chat.svg"/>
+    <span class="bottom-nav__label" data-i18n="navChat">Chat</span>
+  </button>
+  <button class="bottom-nav__item" onclick="window.location.href='test.html'" type="button" aria-label="Test">
+    <img alt="Test icon" class="nav-icon" src="assets/nav-test.svg"/>
+    <span class="bottom-nav__label" data-i18n="navTest">Test</span>
+  </button>
+  <button class="bottom-nav__item" onclick="window.location.href='me.html'" type="button" aria-label="Me">
+    <img alt="Me icon" class="nav-icon" src="assets/nav-me.svg"/>
+    <span class="bottom-nav__label" data-i18n="navMe">Me</span>
+  </button>
+</nav>
+</div>
+<!-- Cache-buster to avoid old cached JS after Hostinger upload -->
+<script src="core.js?v=20260203v1"></script>
+  <script src="auth.js"></script>
+<script>
+    try { window.requireProfileOrRedirect && window.requireProfileOrRedirect("welcome.html"); } catch {}
+  </script>
+<script src="app.js"></script>
+<script src="premium-renderer.js"></script>
+<script src="translations.js"></script>
+<script src="language.js"></script>
+<script src="chat.js"></script>
+    <!-- Service worker registration is handled by sw-disable.js. Duplicate registration removed for stability. -->
+    <script src="sw-disable.js"></script>
+</body>
+</html>

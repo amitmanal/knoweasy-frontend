@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com" rel="preconnect"/>
+<meta charset="utf-8"/>
+<title>KnowEasy OS – Your AI mentor for exams</title>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<link href="styles.css" rel="stylesheet"/>
+  <style>
+    html{ visibility:hidden; }
+    html.ke-ready{ visibility:visible; }
+  </style>
+  <script>
+    /* Early role/profile gating:
+       - Parents are redirected to the parent dashboard before any UI flashes
+       - Students without a saved profile are sent to onboarding
+       - Guests are routed to the login page
+       This matches the logic in app.js but runs before styles load to avoid
+       partially-rendered screens or unexpected jumps.
+    */
+    (function(){
+      try {
+        const rawUser = localStorage.getItem("knoweasy_user_v1");
+        let user = null;
+        try { user = rawUser ? JSON.parse(rawUser) : null; } catch {}
+        const role = (user && user.role ? String(user.role).toLowerCase() : "");
+        // Parents should always go straight to the parent dashboard
+        if(role === "parent"){
+          window.location.replace("parent.html");
+          return;
+        }
+        // Logged-out or unknown role: let the auth flow handle redirection
+        if(!role){
+          // If there's no saved student profile, send to welcome screen
+          const prof = localStorage.getItem("knoweasy_student_profile_v1");
+          if(!prof){
+            window.location.replace("welcome.html");
+            return;
+          }
+        }else{
+          // Student role: ensure profile exists
+          const prof = localStorage.getItem("knoweasy_student_profile_v1");
+          if(!prof){
+            window.location.replace("welcome.html");
+            return;
+          }
+        }
+      } catch(_){}
+      // Show the page once we've decided not to redirect
+      document.documentElement.classList.add("ke-ready");
+    })();
+  </script>
+
+<script src="https://unpkg.com/@lottiefiles/lottie-player@2.0.12/dist/lottie-player.js"></script>
+<style>
+    .luma-fab{
+      position: fixed; right: 14px; bottom: calc(92px + var(--safe-area-bottom));
+      width: 56px; height: 56px; border-radius: 18px;
+      border: 1px solid rgba(148,163,184,0.22);
+      background: rgba(255,255,255,0.78);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 14px 34px rgba(2,6,23,0.16), 0 0 0 1px rgba(255,255,255,0.28) inset;
+      display:flex; align-items:center; justify-content:center;
+      z-index:9999; cursor:pointer;
+      transition: transform .18s ease, box-shadow .18s ease, opacity .18s ease;
+      animation: ke-float 5.2s ease-in-out infinite;
+    }
+    .luma-fab:hover{ transform: translateY(-2px); box-shadow: 0 22px 50px rgba(2,6,23,0.18), 0 0 0 1px rgba(255,255,255,0.45) inset; }
+    .luma-fab:active{ transform: translateY(-1px) scale(0.98); }
+    .luma-fab img{ width: 28px; height: 28px; display:block; }
+    .luma-fab__dot{
+      position:absolute;
+      top:10px; right:10px;
+      width:10px; height:10px;
+      border-radius:999px;
+      background: radial-gradient(circle at 30% 30%, #a7f3d0, #22c55e);
+      box-shadow: 0 0 0 2px rgba(255,255,255,0.85), 0 8px 18px rgba(34,197,94,0.30);
+    }
+    /*
+      Note: The floating animation keyframes for .luma-fab are defined in
+      the global stylesheet. The stray 50% rule here was removed to avoid
+      invalid CSS. See styles.css for @keyframes ke-float.
+    */
+    @media (prefers-reduced-motion: reduce){
+      .luma-fab{ animation: none; }
+    }
+
+/* Home: clean horizontal cards (Why + Demos) */
+    .hscroll{ display:flex; gap:12px; overflow:auto; padding-bottom:6px; scroll-snap-type:x mandatory; }
+    .hscroll::-webkit-scrollbar{ height:8px; }
+    .hscroll::-webkit-scrollbar-thumb{ background: rgba(148,163,184,0.35); border-radius:999px; }
+    .mini-card{
+      min-width: 230px;
+      scroll-snap-align:start;
+      border-radius:18px;
+      border: 1px solid rgba(148,163,184,0.25);
+      background: rgba(255,255,255,0.72);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 14px 34px rgba(2,6,23,0.10);
+      padding:14px;
+    }
+    .mini-kicker{ font-size:11px; font-weight:900; letter-spacing:0.6px; text-transform:uppercase; color: rgba(15,23,42,0.55); }
+    .mini-title{ margin-top:6px; font-size:14px; font-weight:900; color: rgba(15,23,42,0.92); }
+    .mini-desc{ margin-top:6px; font-size:12px; line-height:1.35; color: rgba(15,23,42,0.70); }
+    .mini-btn{
+      margin-top:12px;
+      display:inline-flex; align-items:center; gap:8px;
+      padding:10px 12px;
+      border-radius:14px;
+      border: 1px solid rgba(148,163,184,0.25);
+      background: rgba(15,23,42,0.92);
+      color: white;
+      font-weight:900;
+      font-size:12px;
+      cursor:pointer;
+    }
+    .mini-btn.secondary{ background: rgba(255,255,255,0.70); color: rgba(15,23,42,0.92); }
+    .quote-card{
+      border-radius:18px;
+      border: 1px solid rgba(148,163,184,0.22);
+      background: rgba(255,255,255,0.60);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 14px 34px rgba(2,6,23,0.08);
+      padding:14px;
+      color: rgba(15,23,42,0.70);
+      font-size:13px;
+      line-height:1.45;
+    }
+  </style>
+<meta content="#F8FAFC" name="theme-color"/>
+<!-- PWA & iOS meta -->
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192x192.png"/>
+<link rel="manifest" href="manifest.json"/>
+</head>
+<body class="has-app">
+<div class="app">
+        <header class="app-header">
+      <!-- Group brand and language selector together so they align on the left -->
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div class="app-header__brand">
+          <div class="brand-logo">KE</div>
+          <div class="brand-text">
+            <div class="brand-title">KnowEasy OS</div>
+            <div class="brand-subtitle">Your AI mentor for exams</div>
+            <div class="brand-meta" id="profileMeta">Board • Class</div>
+          </div>
+        </div>
+        <!-- Language selector (global) -->
+        <select id="keLangSelect" class="lang-select" aria-label="Language">
+          <option value="en">EN</option>
+          <option value="hi">हिन्दी</option>
+          <option value="mr">मराठी</option>
+        </select>
+      </div>
+      <button class="app-header__profile-btn" onclick="window.location.href='me.html'" type="button">
+        <span class="profile-avatar">A</span>
+      </button>
+    </header>
+<main class="app-main">
+<section class="hero">
+<div class="hero-left">
+        <p class="hero-eyebrow" data-i18n="greeting">Welcome back 👋</p>
+        <h1 class="hero-title">
+            <span data-i18n="heroTitleIntro">Hi, I’m</span> <span class="hero-title__luma">Luma</span>
+        </h1>
+        <p class="hero-desc" data-i18n="heroDesc">
+            Let's crush your <strong>Boards, JEE, NEET</strong> together.
+            I've got your doubts, tests and timetable.
+          </p>
+        <button class="hero-cta" onclick="window.location.href='chat.html'" type="button">
+          <span class="hero-cta__icon">💬</span>
+          <span data-i18n="askDoubtNow">Ask a doubt now</span>
+        </button>
+</div>
+<div class="hero-right">
+<div class="hero-luma-orbit">
+<div class="hero-luma-glow"></div>
+<div class="hero-luma-backplate"></div>
+<lottie-player autoplay="" background="transparent" class="hero-luma-player" loop="" speed="1" src="luma-main.json">
+</lottie-player>
+</div>
+</div>
+</section>
+<section class="card priority-card">
+<div class="priority-left">
+<p class="priority-label">Luma's priority for you</p>
+<h2 class="priority-title" id="priority-title">
+            Revise Physics – Motion (15 mins)
+          </h2>
+<p class="priority-desc" id="priority-desc">
+            Based on your recent weak topics and upcoming exams.
+          </p>
+<div class="priority-tags">
+<span class="priority-tag" id="priority-subject-tag">Physics</span>
+<span class="priority-tag" id="priority-exam-tag">JEE Main</span>
+<span class="priority-tag" id="priority-duration-tag">15 min</span>
+</div>
+</div>
+<div class="priority-right">
+<div class="priority-pill">
+<span class="priority-pill-icon">✨</span>
+<span class="priority-pill-text">Do this first</span>
+</div>
+</div>
+</section>
+<section class="section">
+<div class="section-header">
+<h2 class="section-title">What do you want to do now?</h2>
+</div>
+<div class="quick-grid">
+<button class="quick-card" onclick="window.location.href='chat.html'" type="button">
+<div class="quick-icon">
+<img alt="Ask doubt icon" src="assets/icon-ask-doubt.png"/>
+</div>
+<div class="quick-title">Ask Doubt</div>
+<div class="quick-subtitle">Precise answers to your questions</div>
+</button>
+<button class="quick-card" onclick="window.location.href='study.html'" type="button">
+<div class="quick-icon">
+<img alt="Notes &amp; mindmaps icon" src="assets/icon-notes.png"/>
+</div>
+<div class="quick-title">Notes &amp; Mindmaps</div>
+<div class="quick-subtitle">Dive into chapter summaries</div>
+</button>
+<button class="quick-card" onclick="window.location.href='test.html'" type="button">
+<div class="quick-icon">
+<img alt="Smart Test AI icon" src="assets/icon-smart-test.png"/>
+</div>
+<div class="quick-title">Smart Test AI</div>
+<div class="quick-subtitle">Know your strengths &amp; growth areas</div>
+</button>
+<button class="quick-card" onclick="window.location.href='test.html'" type="button">
+<div class="quick-icon">
+<img alt="PYQ simulator icon" src="assets/icon-pyq.png"/>
+</div>
+<div class="quick-title">PYQ Simulator</div>
+<div class="quick-subtitle">Practice real exam questions</div>
+</button>
+</div>
+</section>
+<section class="section">
+<div class="section-header">
+<h2 class="section-title">Why KnowEasy feels different</h2>
+</div>
+<div aria-label="Why KnowEasy" class="hscroll">
+<div class="mini-card">
+<div class="mini-kicker">Clarity</div>
+<div class="mini-title">Structured by syllabus</div>
+<div class="mini-desc">Answers follow your board chapters first — so you never feel lost.</div>
+</div>
+<div class="mini-card">
+<div class="mini-kicker">Calm</div>
+<div class="mini-title">Built for exams, not chats</div>
+<div class="mini-desc">Final answer → steps → key insight. No unnecessary talk.</div>
+</div>
+<div class="mini-card">
+<div class="mini-kicker">Smart</div>
+<div class="mini-title">Auto context switching</div>
+<div class="mini-desc">Ask Biology while on Chemistry — Luma adapts silently.</div>
+</div>
+<div class="mini-card">
+<div class="mini-kicker">Safe</div>
+<div class="mini-title">Exam-tone by default</div>
+<div class="mini-desc">Short, correct, and scoring-focused — without pressure vibes.</div>
+</div>
+</div>
+</section>
+<section class="section">
+<div class="section-header">
+<h2 class="section-title">Explore AI demos (no AI used)</h2>
+</div>
+<div aria-label="AI demos" class="hscroll">
+<div class="mini-card">
+<div class="mini-kicker">Demo</div>
+<div class="mini-title">Class 7 Biology</div>
+<div class="mini-desc">Photosynthesis explained with steps + takeaway.</div>
+<button class="mini-btn" onclick="window.location.href='demos/demo_photosynthesis.html'" type="button">Open demo →</button>
+</div>
+<div class="mini-card">
+<div class="mini-kicker">Demo</div>
+<div class="mini-title">Class 10 Chemistry</div>
+<div class="mini-desc">Balance an equation and understand what changes.</div>
+<button class="mini-btn" onclick="window.location.href='demos/demo_balancing.html'" type="button">Open demo →</button>
+</div>
+<div class="mini-card">
+<div class="mini-kicker">Demo</div>
+<div class="mini-title">Class 11 Physics</div>
+<div class="mini-desc">A numerical solved the exam-safe way.</div>
+<button class="mini-btn" onclick="window.location.href='demos/demo_numerical.html'" type="button">Open demo →</button>
+</div>
+<div class="mini-card">
+<div class="mini-kicker">Demo</div>
+<div class="mini-title">Smart Test Preview</div>
+<div class="mini-desc">See how analysis will look (sample only).</div>
+<button class="mini-btn" onclick="window.location.href='demos/demo_test_insights.html'" type="button">Open demo →</button>
+</div>
+</div>
+</section>
+<section class="section">
+<div class="quote-card">learning feels lighter when clarity replaces pressure</div>
+</section>
+<div class="bottom-padding"></div>
+</main>
+<!-- Floating Luma -->
+<button aria-label="Open Luma" class="luma-fab" onclick="window.location.href='chat.html'" type="button">
+<span class="luma-fab__dot"></span>
+<img alt="Chat icon" src="assets/nav-chat.svg"/>
+</button>
+<!-- Bottom nav: 4 tabs ONLY -->
+<nav class="bottom-nav">
+  <!-- Added ARIA labels on buttons for improved accessibility -->
+  <button class="bottom-nav__item bottom-nav__item--active" onclick="window.location.href='index.html'" type="button" aria-label="Home">
+    <img alt="Home icon" class="nav-icon" src="assets/nav-home.svg"/>
+    <span class="bottom-nav__label" data-i18n="navHome">Home</span>
+  </button>
+  <button class="bottom-nav__item" onclick="window.location.href='study.html'" type="button" aria-label="Study">
+    <img alt="Study icon" class="nav-icon" src="assets/nav-study.svg"/>
+    <span class="bottom-nav__label" data-i18n="navStudy">Study</span>
+  </button>
+  <button class="bottom-nav__item" onclick="window.location.href='test.html'" type="button" aria-label="Test">
+    <img alt="Test icon" class="nav-icon" src="assets/nav-test.svg"/>
+    <span class="bottom-nav__label" data-i18n="navTest">Test</span>
+  </button>
+  <button class="bottom-nav__item" onclick="window.location.href='me.html'" type="button" aria-label="Me">
+    <img alt="Me icon" class="nav-icon" src="assets/nav-me.svg"/>
+    <span class="bottom-nav__label" data-i18n="navMe">Me</span>
+  </button>
+</nav>
+</div>
+<!-- Onboarding overlay (kept) -->
+<div class="onboarding-overlay hidden" id="onboarding-overlay">
+<div class="onboarding-modal">
+<div class="onboarding-header">
+<div class="onboarding-pill">Set up your study space</div>
+<h2 class="onboarding-title">Choose your board &amp; class</h2>
+<p class="onboarding-subtitle">
+          Luma will customise your timetable, tests and chapters automatically.
+        </p>
+</div>
+<div class="onboarding-grid">
+<div class="onboarding-field">
+<label for="onb-board">Board</label>
+<select id="onb-board">
+<option value="cbse">CBSE</option>
+<option value="msb">Maharashtra Board</option>
+<option value="icse">ICSE</option>
+</select>
+</div>
+<div class="onboarding-field">
+<label for="onb-class">Class</label>
+<select id="onb-class">
+<option value="">Select</option>
+<option value="5">Class 5</option>
+<option value="6">Class 6</option>
+<option value="7">Class 7</option>
+<option value="8">Class 8</option>
+<option value="9">Class 9</option>
+<option value="10">Class 10</option>
+            <!-- Integrated 11–12 only; individual 11 and 12 options removed per CEO spec -->
+            <option value="11_12">Class 11–12 (Integrated)</option>
+</select>
+</div>
+<div class="onboarding-field hidden" id="onb-group-field">
+<label for="onb-group">Group</label>
+<select id="onb-group">
+<option value="pcm">PCM</option>
+<option value="pcb">PCB</option>
+<option value="pcmb">PCMB</option>
+</select>
+</div>
+<div class="onboarding-field hidden" id="onb-tracks-field">
+              <div class="form-label">Exam track</div>
+<div class="onb-tracks" id="onb-tracks"></div>
+<div class="onboarding-hint" id="onb-tracks-hint"></div>
+</div>
+</div>
+<p class="onboarding-help">
+        You can change these anytime from the Me tab.
+      </p>
+<div class="onboarding-footer">
+<button class="onboarding-secondary" id="onb-later" type="button">Maybe later</button>
+<button class="onboarding-primary" id="onb-save" type="button">Save</button>
+</div>
+</div>
+</div>
+<script src="core.js?v=20260203v3"></script>
+    <script src="pwa-install.js"></script>
+<script>
+    try { window.requireProfileOrRedirect && window.requireProfileOrRedirect("welcome.html"); } catch {}
+  </script>
+<script src="study.js"></script>
+<script src="app.js"></script>
+
+    <!-- Load translations and language helper after the app script so the
+         DOM is ready and UI strings can be translated. -->
+    <script src="translations.js"></script>
+    <script src="language.js"></script>
+
+<script>
+  // Stability: if Lottie web component fails to load, don't block UI.
+  window.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+      try {
+        const has = !!customElements.get('lottie-player');
+        if (!has) {
+          document.querySelectorAll('lottie-player,[data-lottie]').forEach(el => el.remove());
+        }
+      } catch (_) {}
+    }, 2000);
+  });
+</script>
+    <script src="sw-disable.js"></script>
+</body>
+</html>

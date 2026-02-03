@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>My Library | KnowEasy</title>
+  <link href="favicon.ico" rel="icon">
+  <link href="styles.css" rel="stylesheet">
+</head>
+<body class="has-app">
+<div class="app">
+  <header class="app-header">
+    <div style="display:flex; align-items:center; gap:12px;">
+      <div class="app-header__brand" style="cursor:pointer" onclick="window.location.href='luma.html'">
+        <div class="brand-logo">KE</div>
+        <div class="brand-text">
+          <div class="brand-title">KnowEasy</div>
+          <div class="brand-subtitle">My Library</div>
+        </div>
+      </div>
+    </div>
+    <button class="app-header__profile-btn" onclick="window.location.href='me.html'" type="button">
+      <span class="profile-avatar">A</span>
+    </button>
+  </header>
+
+  <main class="app-main">
+    <div style="max-width:920px; margin:0 auto; padding:16px;">
+      <div class="ke-card" style="margin-bottom:12px;">
+        <div class="ke-card__title">Add to Library (testing)</div>
+        <div class="ke-row" style="gap:10px; flex-wrap:wrap;">
+          <input id="libTitle" class="chat-input" placeholder="Title (e.g., Class 10 Photosynthesis Notes)" style="flex:1; min-width:240px;">
+          <input id="libUrl" class="chat-input" placeholder="File URL (PDF link / drive link / website)" style="flex:2; min-width:260px;">
+        </div>
+        <div style="height:10px;"></div>
+        <div class="ke-row" style="gap:10px; align-items:center;">
+          <select id="libType" class="chat-input" style="max-width:220px;">
+            <option value="link">Link</option>
+            <option value="pdf">PDF</option>
+            <option value="image">Image</option>
+            <option value="notes">Notes</option>
+          </select>
+          <button id="btnAddLib" class="ke-btn ke-btn--primary" type="button">Add</button>
+          <div id="libStatus" style="font-size:13px; opacity:.8;"></div>
+        </div>
+      </div>
+
+      <div class="ke-card">
+        <div class="ke-card__title">Your items</div>
+        <div id="libList" style="display:flex; flex-direction:column; gap:10px; margin-top:10px;"></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="core.js?v=20260203v1"></script>
+<script src="auth.js"></script>
+<script src="library.js?v=20260202v1"></script>
+</body>
+</html>

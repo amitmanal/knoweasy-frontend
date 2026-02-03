@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com" rel="preconnect"/>
+<meta charset="utf-8"/>
+<title>Demo • Photosynthesis</title>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<link href="../styles.css" rel="stylesheet"/>
+<style>
+    .demo-wrap{ padding: 14px; }
+    .demo-tag{ display:inline-flex; align-items:center; gap:8px; font-size:11px; font-weight:900; letter-spacing:0.6px; text-transform:uppercase; padding:6px 10px; border-radius:999px; background: rgba(59,130,246,0.12); border:1px solid rgba(59,130,246,0.22); color: rgba(30,64,175,0.95); }
+    .demo-title{ margin-top:10px; font-size:18px; font-weight:900; color: rgba(15,23,42,0.92); }
+    .demo-q{ margin-top:10px; font-size:13px; color: rgba(15,23,42,0.75); }
+    .demo-card{ margin-top:12px; border-radius:18px; border: 1px solid rgba(148,163,184,0.22); background: rgba(255,255,255,0.68); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 14px 34px rgba(2,6,23,0.08); padding:14px; }
+    .demo-h{ font-size:12px; font-weight:900; color: rgba(15,23,42,0.78); letter-spacing:0.2px; }
+    .demo-p{ margin-top:6px; font-size:13px; line-height:1.5; color: rgba(15,23,42,0.75); }
+    .demo-list{ margin:8px 0 0 18px; color: rgba(15,23,42,0.75); font-size:13px; line-height:1.5; }
+    .demo-back{ border:0; background: transparent; font-weight:900; color: rgba(59,130,246,0.95); cursor:pointer; }
+  </style>
+<meta content="#F8FAFC" name="theme-color"/></head>
+<body>
+<div class="ke-backbar">
+  <button class="ke-backbtn" id="keBackBtn" type="button" aria-label="Back">← Back</button>
+</div>
+<script>
+(function(){
+  function smartBack(){
+    try{ if(window.history && history.length > 1){ history.back(); return; } }catch(e){}
+    window.location.href = "index.html";
+  }
+  var b=document.getElementById('keBackBtn');
+  if(b) b.addEventListener('click', smartBack);
+})();
+</script>
+<style>
+.ke-backbar{position:sticky; top:0; z-index:50; padding:10px 0; background:rgba(255,255,255,0.92); backdrop-filter: blur(10px);}
+.ke-backbtn{margin-left:12px; border:1px solid rgba(15,23,42,0.15); background:rgba(255,255,255,0.9); padding:8px 12px; border-radius:12px; font-weight:700; cursor:pointer;}
+.ke-backbtn:active{transform: translateY(1px);}
+</style>
+
+<div class="app">
+<header class="app-header">
+<div class="app-header__brand">
+<div class="brand-logo">KE</div>
+<div class="brand-text">
+<div class="brand-title">KnowEasy AI</div>
+<div class="brand-subtitle">Demo preview</div>
+<div class="brand-meta">No AI used • Sample format</div>
+</div>
+</div>
+<button aria-label="Back" class="app-header__profile-btn" onclick="window.location.href='../index.html'" type="button">
+<span class="profile-avatar">←</span>
+</button>
+</header>
+<main class="app-main">
+<div class="demo-wrap">
+<button class="demo-back" onclick="window.location.href='../index.html'" type="button">← Back to Home</button>
+<div style="margin-top:10px;">
+<span class="demo-tag">DEMO • Class 7 • Biology</span>
+<div class="demo-title">Photosynthesis</div>
+<div class="demo-q">Question: <strong>Explain photosynthesis in simple steps.</strong></div>
+</div>
+<div class="demo-card">
+<div class="demo-h">Final Answer</div>
+<div class="demo-p">Photosynthesis is the process by which green plants make their own food (glucose) using sunlight, water, and carbon dioxide, and release oxygen.</div>
+</div>
+<div class="demo-card">
+<div class="demo-h">Explanation / Steps</div>
+<ol class="demo-list">
+<li>Leaves take in <strong>carbon dioxide</strong> from air through stomata.</li>
+<li>Roots absorb <strong>water</strong> and send it to leaves.</li>
+<li><strong>Chlorophyll</strong> traps sunlight energy.</li>
+<li>Sunlight energy helps convert water + carbon dioxide into <strong>glucose</strong>.</li>
+<li><strong>Oxygen</strong> is released as a by‑product.</li>
+</ol>
+</div>
+<div class="demo-card">
+<div class="demo-h">Key Insight</div>
+<div class="demo-p">Sunlight is the energy source that turns simple raw materials into food.</div>
+</div>
+<div class="demo-card">
+<div class="demo-h">Optional deeper dive</div>
+<div class="demo-p">A common balanced form: <strong>6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂</strong> (in presence of sunlight and chlorophyll).</div>
+</div>
+</div>
+<div class="bottom-padding"></div>
+</main>
+<!-- Floating Luma -->
+<button aria-label="Open Luma" class="luma-fab" onclick="window.location.href='../chat.html'" type="button">
+<span class="luma-fab__dot"></span>
+<img alt="" src="../assets/nav-chat.svg"/>
+</button>
+<!-- Bottom nav: 4 tabs ONLY -->
+<nav class="bottom-nav">
+<button class="bottom-nav__item" onclick="window.location.href='../index.html'" type="button">
+<img alt="" class="nav-icon" src="../assets/nav-home.svg"/>
+<span class="bottom-nav__label">Home</span>
+</button>
+<button class="bottom-nav__item" onclick="window.location.href='../study.html'" type="button">
+<img alt="" class="nav-icon" src="../assets/nav-study.svg"/>
+<span class="bottom-nav__label">Study</span>
+</button>
+<button class="bottom-nav__item" onclick="window.location.href='../test.html'" type="button">
+<img alt="" class="nav-icon" src="../assets/nav-test.svg"/>
+<span class="bottom-nav__label">Test</span>
+</button>
+<button class="bottom-nav__item" onclick="window.location.href='../me.html'" type="button">
+<img alt="" class="nav-icon" src="../assets/nav-me.svg"/>
+<span class="bottom-nav__label">Me</span>
+</button>
+</nav>
+</div>
+    <script src="../sw-disable.js"></script>
+</body>
+</html>

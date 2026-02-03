@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com" rel="preconnect"/>
+<meta charset="utf-8"/>
+<title>Demo • Test Insights</title>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<link href="../styles.css" rel="stylesheet"/>
+<style>
+    .wrap{ padding:14px; }
+    .tag{ display:inline-flex; align-items:center; gap:8px; font-size:11px; font-weight:900; letter-spacing:0.6px; text-transform:uppercase; padding:6px 10px; border-radius:999px; background: rgba(245,158,11,0.14); border:1px solid rgba(245,158,11,0.22); color: rgba(146,64,14,0.95); }
+    .title{ margin-top:10px; font-size:18px; font-weight:900; color: rgba(15,23,42,0.92); }
+    .card{ margin-top:12px; border-radius:18px; border: 1px solid rgba(148,163,184,0.22); background: rgba(255,255,255,0.68); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 14px 34px rgba(2,6,23,0.08); padding:14px; }
+    .h{ font-size:12px; font-weight:900; color: rgba(15,23,42,0.78); }
+    .p{ margin-top:6px; font-size:13px; line-height:1.5; color: rgba(15,23,42,0.75); }
+    .bar{ margin-top:10px; height:10px; border-radius:999px; background: rgba(15,23,42,0.08); overflow:hidden; }
+    .bar > div{ height:100%; border-radius:999px; background: rgba(15,23,42,0.92); width:0%; }
+    .grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px; }
+    .tile{ border-radius:16px; border: 1px solid rgba(148,163,184,0.18); background: rgba(255,255,255,0.70); padding:12px; }
+    .k{ font-size:11px; font-weight:900; color: rgba(15,23,42,0.60); text-transform:uppercase; letter-spacing:0.6px; }
+    .v{ margin-top:6px; font-size:15px; font-weight:900; color: rgba(15,23,42,0.92); }
+    .back{ border:0; background: transparent; font-weight:900; color: rgba(59,130,246,0.95); cursor:pointer; }
+  </style>
+<meta content="#F8FAFC" name="theme-color"/></head>
+<body>
+<div class="ke-backbar">
+  <button class="ke-backbtn" id="keBackBtn" type="button" aria-label="Back">← Back</button>
+</div>
+<script>
+(function(){
+  function smartBack(){
+    try{ if(window.history && history.length > 1){ history.back(); return; } }catch(e){}
+    window.location.href = "index.html";
+  }
+  var b=document.getElementById('keBackBtn');
+  if(b) b.addEventListener('click', smartBack);
+})();
+</script>
+<style>
+.ke-backbar{position:sticky; top:0; z-index:50; padding:10px 0; background:rgba(255,255,255,0.92); backdrop-filter: blur(10px);}
+.ke-backbtn{margin-left:12px; border:1px solid rgba(15,23,42,0.15); background:rgba(255,255,255,0.9); padding:8px 12px; border-radius:12px; font-weight:700; cursor:pointer;}
+.ke-backbtn:active{transform: translateY(1px);}
+</style>
+
+<div class="app">
+<header class="app-header">
+<div class="app-header__brand">
+<div class="brand-logo">KE</div>
+<div class="brand-text">
+<div class="brand-title">KnowEasy AI</div>
+<div class="brand-subtitle">Demo preview</div>
+<div class="brand-meta">No AI used • Sample format</div>
+</div>
+</div>
+<button aria-label="Back" class="app-header__profile-btn" onclick="window.location.href='../index.html'" type="button">
+<span class="profile-avatar">←</span>
+</button>
+</header>
+<main class="app-main">
+<div class="wrap">
+<button class="back" onclick="window.location.href='../index.html'" type="button">← Back to Home</button>
+<div style="margin-top:10px;">
+<span class="tag">DEMO • Smart Test</span>
+<div class="title">Sample Insights</div>
+<div style="margin-top:8px;color:rgba(15,23,42,0.75);font-size:13px;">This is a static preview of how analysis will feel.</div>
+</div>
+<div class="card">
+<div class="h">Overall readiness</div>
+<div class="p">You’re strong in basics. Next improvement will come from reducing silly mistakes.</div>
+<div class="bar"><div style="width:72%;"></div></div>
+</div>
+<div class="card">
+<div class="h">Quick breakdown</div>
+<div class="grid">
+<div class="tile"><div class="k">Accuracy</div><div class="v">72%</div></div>
+<div class="tile"><div class="k">Speed</div><div class="v">Good</div></div>
+<div class="tile"><div class="k">Concept gaps</div><div class="v">2 topics</div></div>
+<div class="tile"><div class="k">Next focus</div><div class="v">Revision</div></div>
+</div>
+</div>
+<div class="card">
+<div class="h">Key Insight</div>
+<div class="p">Small mistakes reduce marks more than hard questions — fix them first.</div>
+</div>
+</div>
+<div class="bottom-padding"></div>
+</main>
+<!-- Floating Luma -->
+<button aria-label="Open Luma" class="luma-fab" onclick="window.location.href='../chat.html'" type="button">
+<span class="luma-fab__dot"></span>
+<img alt="" src="../assets/nav-chat.svg"/>
+</button>
+<!-- Bottom nav: 4 tabs ONLY -->
+<nav class="bottom-nav">
+<button class="bottom-nav__item" onclick="window.location.href='../index.html'" type="button">
+<img alt="" class="nav-icon" src="../assets/nav-home.svg"/>
+<span class="bottom-nav__label">Home</span>
+</button>
+<button class="bottom-nav__item" onclick="window.location.href='../study.html'" type="button">
+<img alt="" class="nav-icon" src="../assets/nav-study.svg"/>
+<span class="bottom-nav__label">Study</span>
+</button>
+<button class="bottom-nav__item" onclick="window.location.href='../test.html'" type="button">
+<img alt="" class="nav-icon" src="../assets/nav-test.svg"/>
+<span class="bottom-nav__label">Test</span>
+</button>
+<button class="bottom-nav__item" onclick="window.location.href='../me.html'" type="button">
+<img alt="" class="nav-icon" src="../assets/nav-me.svg"/>
+<span class="bottom-nav__label">Me</span>
+</button>
+</nav>
+</div>
+    <script src="../sw-disable.js"></script>
+</body>
+</html>

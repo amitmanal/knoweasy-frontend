@@ -7,8 +7,8 @@
     <meta name="description" content="AI-powered adaptive learning system">
     <link href="favicon.ico" rel="icon">
     <link href="styles.css" rel="stylesheet">
-    <link href="luma.css" rel="stylesheet">
-    <meta content="#4F8DFF" name="theme-color">
+    <link href="luma-ultimate.css" rel="stylesheet">
+    <meta content="#6B7FFF" name="theme-color">
     
     <!-- PWA -->
     <meta name="mobile-web-app-capable" content="yes">
@@ -16,279 +16,24 @@
     <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192x192.png">
     <link rel="manifest" href="manifest.json">
     
-    <!-- Libraries -->
+    <!-- Libraries for Math & Diagrams -->
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-    
-    <style>
-        :root {
-            --primary: #4F8DFF;
-            --success: #10B981;
-            --warning: #F59E0B;
-            --error: #EF4444;
-            --purple: #8B5CF6;
-            --bg: #F8FAFC;
-            --card: #FFFFFF;
-            --text: #0F172A;
-            --text-secondary: #64748B;
-            --border: #E2E8F0;
-        }
-        
-        .luma-container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 16px;
-            padding-bottom: 100px;
-            min-height: 100vh;
-            background: var(--bg);
-        }
-        
-        /* Progress Bar */
-        .progress-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: var(--border);
-            z-index: 1000;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--purple));
-            transition: width 0.3s ease;
-            width: 0%;
-        }
-        
-        /* Header */
-        .luma-header {
-            background: var(--card);
-            padding: 24px;
-            border-radius: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
-        
-        .luma-title {
-            font-size: 26px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: var(--text);
-            line-height: 1.3;
-        }
-        
-        .luma-meta {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-top: 12px;
-        }
-        
-        .meta-badge {
-            padding: 6px 12px;
-            background: rgba(79, 141, 255, 0.1);
-            color: var(--primary);
-            border-radius: 12px;
-            font-size: 13px;
-            font-weight: 600;
-        }
-        
-        /* Sections */
-        .luma-section {
-            background: var(--card);
-            padding: 24px;
-            border-radius: 16px;
-            margin-bottom: 16px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-        }
-        
-        .section-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-        
-        .section-icon {
-            font-size: 24px;
-        }
-        
-        .section-title {
-            font-size: 19px;
-            font-weight: 700;
-            color: var(--text);
-        }
-        
-        .section-content {
-            font-size: 16px;
-            line-height: 1.8;
-            color: var(--text);
-        }
-        
-        .section-content p {
-            margin-bottom: 12px;
-        }
-        
-        .section-content strong {
-            color: var(--primary);
-            font-weight: 600;
-        }
-        
-        /* Visual Container */
-        .visual-container {
-            background: #FAFBFF;
-            padding: 28px;
-            border-radius: 12px;
-            margin: 16px 0;
-            border: 2px solid var(--border);
-        }
-        
-        .visual-caption {
-            font-size: 14px;
-            color: var(--text-secondary);
-            text-align: center;
-            margin-top: 12px;
-            font-style: italic;
-        }
-        
-        /* Steps */
-        .step-card {
-            display: flex;
-            gap: 14px;
-            padding: 18px;
-            background: linear-gradient(135deg, #667eea15, #764ba215);
-            border-left: 4px solid var(--primary);
-            border-radius: 12px;
-            margin-bottom: 12px;
-        }
-        
-        .step-number {
-            flex-shrink: 0;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--purple));
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 15px;
-        }
-        
-        .step-content {
-            flex: 1;
-        }
-        
-        .step-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 6px;
-            color: var(--text);
-        }
-        
-        .step-text {
-            font-size: 15px;
-            line-height: 1.7;
-        }
-        
-        /* Mistakes & Practice */
-        .mistake-card, .practice-card {
-            padding: 16px;
-            border-radius: 12px;
-            margin-bottom: 12px;
-            font-size: 15px;
-            line-height: 1.7;
-        }
-        
-        .mistake-card {
-            background: #FEF3C7;
-            border-left: 4px solid var(--warning);
-        }
-        
-        .practice-card {
-            background: #D1F4E0;
-            border-left: 4px solid var(--success);
-        }
-        
-        .practice-hint {
-            font-size: 14px;
-            color: #065f46;
-            font-style: italic;
-            margin-top: 6px;
-        }
-        
-        /* Loading */
-        .loading {
-            text-align: center;
-            padding: 60px 20px;
-        }
-        
-        .spinner {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            border: 4px solid var(--border);
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        /* Error */
-        .error {
-            background: rgba(239, 68, 68, 0.1);
-            color: #991b1b;
-            padding: 24px;
-            border-radius: 12px;
-            border: 2px solid var(--error);
-        }
-        
-        /* AI Tutor Button */
-        .ai-fab {
-            position: fixed;
-            bottom: 90px;
-            right: 20px;
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--purple));
-            color: white;
-            border: none;
-            box-shadow: 0 4px 16px rgba(79, 141, 255, 0.4);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            z-index: 999;
-            transition: transform 0.2s;
-        }
-        
-        .ai-fab:hover {
-            transform: scale(1.1);
-        }
-        
-        @media (max-width: 768px) {
-            .luma-container {
-                padding: 12px;
-            }
-            .luma-section {
-                padding: 20px;
-            }
-        }
-    </style>
+
+<style>
+.luma-mermaid { margin-top: 12px; }
+.luma-mermaid .mermaid { overflow-x: auto; }
+.luma-caption { margin-top: 8px; font-size: 14px; opacity: .75; }
+</style>
 </head>
 <body class="has-app">
 <div class="app">
-    <div class="progress-bar">
-        <div class="progress-fill" id="progressFill"></div>
+    <!-- Toast Notification -->
+    <div class="luma-toast" id="lumaToast" role="alert" aria-live="polite">
+        <div class="luma-toast-icon">🎉</div>
+        <div class="luma-toast-text">Notification</div>
     </div>
 
     <header class="app-header">
@@ -308,15 +53,62 @@
     </header>
 
     <main class="app-main">
-        <div class="luma-container" id="lumaApp">
-            <div class="loading">
-                <div class="spinner"></div>
-                <p style="margin-top:16px; color: var(--text-secondary);">Loading content...</p>
+        <div class="luma-app" id="lumaApp">
+            <div class="luma-container">
+                
+                <!-- Loading/Upload Screen -->
+                <div class="luma-loading" id="uploadScreen">
+                    <div class="luma-spinner"></div>
+                    <h2 class="luma-loading-text">Loading your lesson...</h2>
+                    <p style="margin: 20px 0; color: var(--text-tertiary);">
+                        Preparing content from backend
+                    </p>
+                </div>
+
+                <!-- Header Content (populated by Luma.js) -->
+                <div class="hidden" id="headerContent"></div>
+
+                <!-- Main Layout -->
+                <div class="hidden luma-main" id="lumaMain">
+                    <!-- Timeline Sidebar -->
+                    <aside class="luma-sidebar" id="lumaSidebar"></aside>
+
+                    <!-- Main Content -->
+                    <main class="luma-content" id="lumaContent"></main>
+
+                    <!-- AI Sidebar (Desktop) -->
+                    <aside class="luma-ai-sidebar" id="lumaAiSidebar">
+                        <div class="luma-ai-header">
+                            <div class="luma-ai-icon">🤖</div>
+                            <div>
+                                <div class="luma-ai-title">Lumi AI</div>
+                                <div style="font-size: 11px; opacity: 0.8;">Ask me anything!</div>
+                            </div>
+                        </div>
+                        <div class="luma-ai-messages" id="aiMessages">
+                            <div class="luma-ai-message assistant">
+                                👋 Hi! I'm Lumi. Ask me doubts or request explanations!
+                            </div>
+                        </div>
+                        <div class="luma-ai-input-container">
+                            <textarea class="luma-ai-input" id="aiInput" placeholder="Ask..." rows="2"></textarea>
+                            <button class="luma-ai-send" id="aiSendButton">📤</button>
+                        </div>
+                        <div style="margin-top: 12px; padding: 8px; background: rgba(107,127,255,0.1); border-radius: 12px; font-size: 11px; text-align: center;">
+                            <span id="aiRateLimit">Free: 3 questions/day</span>
+                            <button class="luma-btn-premium-mini" onclick="window.location.href='me.html?tab=premium'" style="margin-top: 6px;">
+                                ⭐ Go Premium
+                            </button>
+                        </div>
+                    </aside>
+                </div>
+
             </div>
         </div>
     </main>
 
-    <button class="ai-fab" id="aiFab" title="Ask AI Tutor">🤖</button>
+    <!-- AI FAB (Mobile) -->
+    <button class="luma-ai-fab" id="lumaAiFab">🤖</button>
 
     <nav class="bottom-nav">
         <button class="bottom-nav__item" onclick="window.location.href='index.html'" type="button">
@@ -342,645 +134,312 @@
     </nav>
 </div>
 
-<script src="core.js?v=20260203"></script>
+<script src="core.js?v=20260204"></script>
 <script src="auth.js"></script>
 <script src="app.js"></script>
+<script src="luma.js"></script>
+<script src="luma-ai.js"></script>
+<script src="luma-premium.js"></script>
 <script>
-// ============================================================================
-// SMART LUMA SYSTEM - HANDLES ALL URL FORMATS
-// ============================================================================
-
-// Initialize Mermaid
+// Initialize Mermaid for diagrams
 mermaid.initialize({ 
     startOnLoad: false,
     theme: 'default',
     themeVariables: {
         primaryColor: '#E0E7FF',
         primaryTextColor: '#1E293B',
-        primaryBorderColor: '#4F8DFF',
+        primaryBorderColor: '#6B7FFF',
         lineColor: '#64748B'
     }
 });
 
 const API_BASE = window.API_BASE || 'https://knoweasy-engine-api.onrender.com';
 
-// ============================================================================
-// CONTENT ID BUILDER (NO HARDCODED MAPPINGS)
-// ============================================================================
+// Main initialization
+document.addEventListener('DOMContentLoaded', async () => {
+    console.log('🎓 Luma Universal System initializing...');
+    
+    // Initialize Luma engine
+    window.luma = new Luma();
+    window.lumaAI = new LumaAI(window.luma);
+    
+    // Start content loading from backend
+    await loadContentFromBackend();
+    
+    console.log('✅ Luma ready!');
+});
 
-function slugify(input) {
-    return String(input || '')
-        .trim()
-        .toLowerCase()
-        .replace(/&/g, ' and ')
-        .replace(/[^a-z0-9\s-]/g, '')
-        .replace(/\s+/g, '-')
-        .replace(/-+/g, '-')
-        .replace(/^-|-$/g, '');
-}
-
-
-function isIdLikeTitle(title) {
-    if (!title) return false;
-    const t = String(title).trim();
-    // Looks like a slug/id: lots of lowercase/digits and dashes, no spaces
-    return /^[a-z0-9]+(?:-[a-z0-9]+)+$/.test(t) && t.length >= 10;
-}
-
-function displayTitleForContent(c) {
-    const t = (c && c.title) ? String(c.title).trim() : "";
-    const id = (c && c.id) ? String(c.id).trim() : "";
-    if (!t) return (c?.blueprint?.title || c?.metadata?.title || id || "Untitled").toString();
-    if (t.toLowerCase() === "coming soon") return t;
-    if (t === id || isIdLikeTitle(t)) {
-        return (c?.blueprint?.title || c?.metadata?.title || t).toString();
+async function loadContentFromBackend() {
+    const uploadScreen = document.getElementById('uploadScreen');
+    
+    try {
+        const params = new URLSearchParams(window.location.search);
+        const contentId = params.get('content_id');
+        const title = params.get('title') || params.get('chapter_title');
+        
+        // Handle coming-soon with resolution
+        if (!contentId || contentId === 'coming-soon') {
+            console.log('[Luma] 🔍 Detected coming-soon. Attempting resolution...');
+            
+            const ctx = {
+                track: params.get("track"),
+                program: params.get("program"),
+                class_num: params.get("class_num"),
+                subject_slug: params.get("subject_slug"),
+                chapter_id: params.get("chapter_id"),
+                chapter_title: params.get("chapter_title") || title
+            };
+            
+            // Try localStorage fallback
+            if (!(ctx.track && ctx.program && ctx.class_num && ctx.subject_slug)) {
+                try {
+                    const saved = localStorage.getItem("ke_last_chapter_context");
+                    if (saved) Object.assign(ctx, JSON.parse(saved));
+                } catch (e) {}
+            }
+            
+            const titleFallback = ctx.chapter_title || "Coming Soon";
+            
+            // Attempt resolution
+            if (ctx.track && ctx.program && ctx.class_num && ctx.subject_slug && (ctx.chapter_id || ctx.chapter_title)) {
+                console.log('[Luma] Attempting resolution with context:', ctx);
+                
+                const qs = new URLSearchParams();
+                qs.set("track", ctx.track);
+                qs.set("program", ctx.program);
+                qs.set("class_num", String(ctx.class_num));
+                qs.set("subject_slug", ctx.subject_slug);
+                if (ctx.chapter_id) qs.set("chapter_id", ctx.chapter_id);
+                if (ctx.chapter_title) qs.set("chapter_title", ctx.chapter_title);
+                
+                const res = await fetch(`${API_BASE}/api/study/resolve?${qs.toString()}`);
+                console.log('[Luma] Resolve API called:', `${API_BASE}/api/study/resolve?${qs.toString()}`);
+                
+                if (res.ok) {
+                    const data = await res.json();
+                    console.log('[Luma] Resolve response:', data);
+                    
+                    const resolvedId = data && (data.content_id || (data.asset && data.asset.content_id));
+                    if (resolvedId) {
+                        console.log('[Luma] ✅ Resolution successful! content_id:', resolvedId);
+                        
+                        // Update URL and reload
+                        const newQS = new URLSearchParams(window.location.search);
+                        newQS.set("content_id", resolvedId);
+                        history.replaceState(null, "", `${window.location.pathname}?${newQS.toString()}`);
+                        
+                        // Continue loading with resolved ID
+                        return await loadContentFromBackend();
+                    }
+                }
+            }
+            
+            console.log('[Luma] ❌ Resolution not possible. Showing Coming Soon for:', titleFallback);
+            showComingSoon(titleFallback);
+            return;
+        }
+        
+        // Fetch content from backend
+        console.log('[Luma] Loading content:', contentId);
+        const response = await fetch(`${API_BASE}/api/luma/content/${encodeURIComponent(contentId)}`);
+        
+        if (!response.ok) {
+            if (title) {
+                showComingSoon(title);
+                return;
+            }
+            throw new Error(`Content not found (ID: ${contentId})`);
+        }
+        
+        const result = await response.json();
+        
+        if (!result.ok || !result.content) {
+            if (title) {
+                showComingSoon(title);
+                return;
+            }
+            throw new Error('Content not found');
+        }
+        
+        const content = result.content;
+        console.log('[Luma] ✅ Content loaded successfully');
+        
+        // Convert backend format to universal Luma format
+        const lumaContent = convertToLumaFormat(content);
+        
+        // FIXED: Use loadData() not loadContent()
+        window.luma.loadData(lumaContent);
+        
+    } catch (error) {
+        console.error('[Luma] Load error:', error);
+        showError(error.message);
     }
-    return t;
 }
 
-
-function normStr(v) {
-    return (v == null ? "" : String(v)).trim().toLowerCase();
-}
-
-function chapterKeyFromMetadata(meta) {
-    // we accept either chapter or topic fields
-    const chap = normStr(meta?.chapter || meta?.topic || "");
-    // allow "photosynthesis in higher plants" vs "photosynthesis_in_higher_plants"
-    return chap.replace(/\s+/g, "_");
-}
-
-function boardKey(meta) { return normStr(meta?.board || ""); }
-function subjectKey(meta) { return normStr(meta?.subject || ""); }
-function classKey(meta) { return normStr(meta?.class || meta?.class_level || meta?.classLevel || ""); }
-
-function matchesLegacyFilters(content, legacy) {
-    const meta = content?.metadata || {};
-    const b = normStr(legacy.board);
-    const s = normStr(legacy.subject);
-    const c = normStr(legacy.cls);
-    const ch = normStr(legacy.chapter).replace(/\s+/g, "_");
-
-    if (b && boardKey(meta) !== b) return false;
-    if (s && subjectKey(meta) !== s) return false;
-
-    if (c) {
-        // metadata may store "11" or 11
-        const ck = classKey(meta);
-        if (ck && ck !== c) return false;
+function convertToLumaFormat(backendContent) {
+    // Convert old blueprint format to new universal format
+    const { metadata, blueprint } = backendContent;
+    
+    const sections = [];
+    const cards = [];
+    
+    // Add Why It Matters
+    if (blueprint.why_it_matters) {
+        cards.push({
+            id: 'card-why',
+            type: 'explain',
+            title: '💡 Why This Matters',
+            content: [blueprint.why_it_matters]
+        });
     }
-
-    if (ch) {
-        const mk = chapterKeyFromMetadata(meta);
-        if (mk && mk !== ch) return false;
+    
+    // Add Conceptual Foundation
+    if (blueprint.conceptual_foundation) {
+        cards.push({
+            id: 'card-concept',
+            type: 'explain',
+            title: '📚 Conceptual Foundation',
+            content: [blueprint.conceptual_foundation]
+        });
     }
-
-    return true;
+    
+    // Add Visual if present
+    if (blueprint.visual) {
+        cards.push({
+            id: 'card-visual',
+            type: 'visual',
+            title: '🎨 Visual Mental Model',
+            content: blueprint.visual.caption || '',
+            diagram: {
+                type: blueprint.visual.type || 'mermaid',
+                code: blueprint.visual.code
+            }
+        });
+    }
+    
+    // Add Steps
+    if (blueprint.steps && blueprint.steps.length > 0) {
+        const stepCards = blueprint.steps.map((step, idx) => ({
+            id: `card-step-${idx + 1}`,
+            type: 'explain',
+            title: `📝 Step ${step.number}: ${step.title || ''}`,
+            content: [step.content]
+        }));
+        cards.push(...stepCards);
+    }
+    
+    // Add Alternative Method
+    if (blueprint.alternative_method) {
+        cards.push({
+            id: 'card-alt',
+            type: 'explain',
+            title: '🔄 Alternative Approach',
+            content: [blueprint.alternative_method]
+        });
+    }
+    
+    // Add Common Mistakes
+    if (blueprint.common_mistakes && blueprint.common_mistakes.length > 0) {
+        cards.push({
+            id: 'card-mistakes',
+            type: 'activity',
+            title: '⚠️ Common Exam Traps',
+            content: blueprint.common_mistakes.map((m, i) => `**${i + 1}.** ${m}`).join('\n\n')
+        });
+    }
+    
+    // Add Practice Questions
+    if (blueprint.practice && blueprint.practice.length > 0) {
+        const practiceCards = blueprint.practice.map((q, idx) => ({
+            id: `card-practice-${idx + 1}`,
+            type: 'practice',
+            title: `✏️ Practice ${idx + 1}`,
+            content: q.text,
+            commonDoubts: q.hint ? [{
+                question: 'Hint',
+                answer: q.hint,
+                difficulty: 'Medium'
+            }] : []
+        }));
+        cards.push(...practiceCards);
+    }
+    
+    // Add Exam Relevance
+    if (blueprint.exam_relevance) {
+        cards.push({
+            id: 'card-exam',
+            type: 'activity',
+            title: '🎯 Exam Strategy',
+            content: blueprint.exam_relevance
+        });
+    }
+    
+    sections.push({
+        id: 'section-1',
+        title: 'Main Content',
+        description: metadata.chapter || metadata.topic || blueprint.title,
+        cards
+    });
+    
+    return {
+        metadata: {
+            title: blueprint.title || metadata.chapter || metadata.topic || 'Lesson',
+            subject: metadata.subject || 'Subject',
+            class: String(metadata.class_level || metadata.class || ''),
+            board: metadata.board || 'Board',
+            examType: metadata.track === 'entrance' ? metadata.program.toUpperCase() : 'Board Exam',
+            difficulty: metadata.difficulty || 'Medium',
+            language: 'en',
+            totalCards: cards.length,
+            estimatedTime: `${Math.ceil(cards.length * 3)} minutes`,
+            tags: metadata.tags || []
+        },
+        sections
+    };
 }
 
-function renderComingSoonOnly(legacyTitle) {
-    const title = legacyTitle ? String(legacyTitle).trim() : "Coming Soon";
-    const container = document.getElementById("contentRoot") || document.body;
-
-    // Try to reuse existing "empty state" container if present; else build minimal
-    container.innerHTML = `
-      <div class="library-wrap" style="max-width: 820px; margin: 0 auto; padding: 24px;">
-        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom: 14px;">
-          <div>
-            <div style="font-size: 18px; font-weight: 700;">${escapeHtml(title)}</div>
-            <div style="font-size: 13px; opacity: 0.75;">This chapter is not available yet. Only published content appears here.</div>
-          </div>
-          <button class="btn btn-secondary" onclick="history.back()">← Back</button>
+function showComingSoon(title) {
+    const uploadScreen = document.getElementById('uploadScreen');
+    uploadScreen.innerHTML = `
+        <div style="text-align: center; padding: 40px 20px;">
+            <div style="font-size: 64px; margin-bottom: 20px;">📚</div>
+            <h2 style="font-size: 24px; margin-bottom: 12px; color: var(--text-primary);">${escapeHtml(title)}</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 24px;">
+                This chapter is not available yet. Only published content appears here.
+            </p>
+            <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                <button onclick="window.history.back()" class="luma-btn luma-btn-secondary">
+                    ← Go Back
+                </button>
+                <button onclick="window.location.href='study.html'" class="luma-btn luma-btn-next">
+                    Browse Chapters
+                </button>
+            </div>
         </div>
+    `;
+}
 
-        <div class="card" style="padding: 18px; border-radius: 14px;">
-          <div style="font-weight: 700; font-size: 16px;">Coming Soon</div>
-          <div style="margin-top: 6px; font-size: 13px; opacity: 0.8;">We're preparing this chapter. Please check back soon.</div>
+function showError(message) {
+    const uploadScreen = document.getElementById('uploadScreen');
+    uploadScreen.innerHTML = `
+        <div style="text-align: center; padding: 40px 20px;">
+            <div style="font-size: 64px; margin-bottom: 20px;">⚠️</div>
+            <h2 style="font-size: 24px; margin-bottom: 12px; color: var(--text-primary);">Unable to Load</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 24px;">
+                ${escapeHtml(message)}
+            </p>
+            <button onclick="window.location.reload()" class="luma-btn luma-btn-next">
+                🔄 Retry
+            </button>
         </div>
-
-        <div style="margin-top: 14px;">
-          
-        </div>
-      </div>
     `;
 }
 
 function escapeHtml(str) {
-    return String(str || "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
+    return String(str || '').replace(/[&<>"']/g, c => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c]));
 }
-
-function getRequestedContentId() {
-    const params = new URLSearchParams(window.location.search);
-    
-const legacy = {
-    board: params.get("board") || "",
-    cls: params.get("cls") || params.get("class") || "",
-    subject: params.get("subject") || "",
-    chapter: params.get("chapter") || "",
-    title: params.get("title") || ""
-};
-const direct = params.get('content_id') || params.get('id');
-    return direct ? String(direct).trim() : null;
-}
-
-function getLibraryFilters() {
-    const params = new URLSearchParams(window.location.search);
-    const board = params.get('board');
-    const cls = params.get('class') || params.get('cls');
-    const subject = params.get('subject');
-    const chapter = params.get('chapter');
-    const title = params.get('title');
-    return {
-        board: board ? String(board).trim() : null,
-        cls: cls ? String(cls).trim() : null,
-        subject: subject ? String(subject).trim() : null,
-        chapter: chapter ? String(chapter).trim() : null,
-        title: title ? String(title).trim() : null,
-    };
-}
-
-async function fetchContentList(limit=50) {
-    const url = `${API_BASE}/api/luma/content?limit=${encodeURIComponent(limit)}`;
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`Failed to load content list (HTTP ${res.status})`);
-    const data = await res.json();
-    if (!data || data.ok !== true || !Array.isArray(data.contents)) {
-        const msg = (data && data.error) ? String(data.error) : 'BAD_RESPONSE';
-        throw new Error(`Failed to load content list (${msg})`);
-    }
-    return data.contents;
-}
-
-function normalize(s){
-    return slugify(String(s||''));
-}
-
-function applyFilters(items, f){
-    const boardN = f.board ? normalize(f.board) : null;
-    const subjectN = f.subject ? normalize(f.subject) : null;
-    const chapterN = f.chapter ? normalize(f.chapter) : null;
-    const clsN = f.cls ? String(f.cls).trim() : null;
-
-    return items.filter(it => {
-        const md = it.metadata || {};
-        const itBoard = md.board ? normalize(md.board) : null;
-        const itSubject = md.subject ? normalize(md.subject) : null;
-        const itChapter = md.chapter ? normalize(md.chapter) : null;
-
-        // If a filter is provided, require the item to have that metadata key.
-        if (boardN && !itBoard) return false;
-        if (subjectN && !itSubject) return false;
-        if (chapterN && !itChapter) return false;
-        const itTopic = md.topic ? normalize(md.topic) : null;
-        const itCls = (md.class_level != null) ? String(md.class_level) : (md.class != null ? String(md.class) : null);
-
-        if (boardN && itBoard && itBoard !== boardN) return false;
-        if (boardN && !itBoard) return false;
-
-        if (clsN && itCls) {
-        const allowed = clsN.includes('_') ? clsN.split('_').map(s=>s.trim()).filter(Boolean) : [clsN];
-        if (!allowed.includes(itCls)) return false;
-      }
-        if (clsN && !itCls) return false;
-
-        if (subjectN && itSubject && itSubject !== subjectN) return false;
-        if (subjectN && !itSubject) return false;
-
-        // chapter is optional; allow matching against chapter OR topic
-        if (chapterN) {
-            const ok = (itChapter && itChapter === chapterN) || (itTopic && itTopic === chapterN);
-            if (!ok) return false;
-        }
-
-        return true;
-    });
-}
-
-function escapeHtml(s){
-    return String(s||'').replace(/[&<>"']/g, (c)=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
-}
-
-function renderLibrary(items, filters){
-    const app = document.getElementById('lumaApp');
-    const heading = filters && (filters.title || filters.chapter || filters.subject) ? (filters.title || filters.chapter || 'Luma Library') : 'Luma Library';
-
-    const cards = items.map(it => {
-        const md = it.metadata || {};
-        const subtitleParts = [];
-        if (md.board) subtitleParts.push(md.board);
-        if (md.class_level != null) subtitleParts.push('Class ' + md.class_level);
-        if (md.subject) subtitleParts.push(md.subject);
-        if (md.chapter) subtitleParts.push(md.chapter);
-        const subtitle = subtitleParts.join(' • ');
-
-        return `
-          <button class="ke-card" type="button" data-open="${escapeHtml(it.id)}"
-            style="width:100%; text-align:left; padding:14px; border:1px solid rgba(0,0,0,.08); border-radius:16px; background:rgba(255,255,255,.85); box-shadow:0 8px 24px rgba(15, 23, 42, 0.06);">
-            <div style="font-weight:800; font-size:16px; margin-bottom:6px; word-break:break-word;">${escapeHtml(it.title || 'Untitled')}</div>
-            <div style="font-size:13px; opacity:.75; word-break:break-word;">${escapeHtml(subtitle)}</div>
-          </button>
-        `;
-    }).join('<div style="height:12px"></div>');
-
-    app.innerHTML = `
-      <div style="max-width:900px; margin:0 auto; padding:18px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:16px;">
-          <div>
-            <div style="font-weight:900; font-size:20px;">${escapeHtml(heading)}</div>
-            <div style="opacity:.75; font-size:13px; margin-top:2px;">Select an available chapter (only published content appears here).</div>
-          </div>
-          <button onclick="window.history.back()" class="ke-btn" style="padding:10px 14px; border-radius:12px;">← Back</button>
-        </div>
-
-        ${items.length ? cards : `
-          <div class="content-card coming-soon" style="cursor:default">
-            <h3>Coming Soon</h3>
-            <div class="meta">${escapeHtml(filters.title || (filters.chapterSlug ? filters.chapterSlug.replace(/[-_]/g,' ') : 'This chapter'))}</div>
-          </div>
-          <div class="empty" style="margin-top:12px">This chapter's content is being prepared. Check back soon.</div>
-        `}
-      </div>
-    `;
-
-    // wire clicks
-    app.querySelectorAll('button[data-open]').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const id = btn.getAttribute('data-open');
-            if (!id) return;
-            const u = new URL(window.location.href);
-            u.searchParams.set('content_id', id);
-            // remove legacy params to avoid confusion (keep only content_id)
-            ['board','class','cls','subject','chapter','title'].forEach(k => u.searchParams.delete(k));
-            window.location.href = u.toString();
-        });
-    });
-}
-
-
-function buildLegacyId(board, cls, subject, chapter) {
-    const boardSlug = slugify(board);
-    const clsSlug = String(cls).trim();
-    const subjectSlug = slugify(subject);
-    const chapterSlug = slugify(chapter);
-
-    if (!boardSlug || !clsSlug || !subjectSlug || !chapterSlug) {
-        return null;
-    }
-
-    return `${boardSlug}-${clsSlug}-${subjectSlug}-${chapterSlug}`;
-}
-
-// ============================================================================
-// CONTENT RENDERER
-// ============================================================================
-
-async function renderContent(data) {
-    const { metadata, blueprint } = data;
-    const app = document.getElementById('lumaApp');
-    
-    let html = '';
-    
-    // Header
-    html += `
-        <div class="luma-header">
-            <h1 class="luma-title">${blueprint.title}</h1>
-            <div class="luma-meta">
-                ${metadata.class_level ? `<span class="meta-badge">📚 Class ${metadata.class_level}</span>` : ''}
-                ${metadata.board ? `<span class="meta-badge">🎯 ${metadata.board}</span>` : ''}
-                ${metadata.subject ? `<span class="meta-badge">🔬 ${metadata.subject}</span>` : ''}
-                ${metadata.difficulty ? `<span class="meta-badge">⚡ ${metadata.difficulty}</span>` : ''}
-            </div>
-        </div>
-    `;
-    
-    // Why It Matters
-    if (blueprint.why_it_matters) {
-        html += `
-            <div class="luma-section">
-                <div class="section-header">
-                    <span class="section-icon">💡</span>
-                    <h2 class="section-title">Why This Matters</h2>
-                </div>
-                <div class="section-content">
-                    <p>${blueprint.why_it_matters}</p>
-                </div>
-            </div>
-        `;
-    }
-    
-    // Conceptual Foundation
-    if (blueprint.conceptual_foundation) {
-        html += `
-            <div class="luma-section">
-                <div class="section-header">
-                    <span class="section-icon">📚</span>
-                    <h2 class="section-title">Conceptual Foundation</h2>
-                </div>
-                <div class="section-content">
-                    ${formatText(blueprint.conceptual_foundation)}
-                </div>
-            </div>
-        `;
-    }
-    
-    // Visual
-    if (blueprint.visual) {
-        const visualId = 'mermaid-' + Date.now();
-        html += `
-            <div class="luma-section">
-                <div class="section-header">
-                    <span class="section-icon">🎨</span>
-                    <h2 class="section-title">Visual Mental Model</h2>
-                </div>
-                <div class="visual-container">
-                    <div class="mermaid" id="${visualId}">
-                        ${blueprint.visual.code}
-                    </div>
-                    ${blueprint.visual.caption ? `<div class="visual-caption">${blueprint.visual.caption}</div>` : ''}
-                </div>
-            </div>
-        `;
-    }
-    
-    // Steps
-    if (blueprint.steps && blueprint.steps.length > 0) {
-        html += `
-            <div class="luma-section">
-                <div class="section-header">
-                    <span class="section-icon">📝</span>
-                    <h2 class="section-title">Step-by-Step Reasoning</h2>
-                </div>
-        `;
-        
-        blueprint.steps.forEach(step => {
-            html += `
-                <div class="step-card">
-                    <div class="step-number">${step.number}</div>
-                    <div class="step-content">
-                        ${step.title ? `<div class="step-title">${step.title}</div>` : ''}
-                        <div class="step-text">${formatText(step.content)}</div>
-                    </div>
-                </div>
-            `;
-        });
-        
-        html += `</div>`;
-    }
-    
-    // Alternative Method
-    if (blueprint.alternative_method) {
-        html += `
-            <div class="luma-section">
-                <div class="section-header">
-                    <span class="section-icon">🔄</span>
-                    <h2 class="section-title">Alternative Approach</h2>
-                </div>
-                <div class="section-content">
-                    ${formatText(blueprint.alternative_method)}
-                </div>
-            </div>
-        `;
-    }
-    
-    // Common Mistakes
-    if (blueprint.common_mistakes && blueprint.common_mistakes.length > 0) {
-        html += `
-            <div class="luma-section">
-                <div class="section-header">
-                    <span class="section-icon">⚠️</span>
-                    <h2 class="section-title">Common Exam Traps</h2>
-                </div>
-        `;
-        blueprint.common_mistakes.forEach(mistake => {
-            html += `<div class="mistake-card">${mistake}</div>`;
-        });
-        html += `</div>`;
-    }
-    
-    // Practice
-    if (blueprint.practice && blueprint.practice.length > 0) {
-        html += `
-            <div class="luma-section">
-                <div class="section-header">
-                    <span class="section-icon">✏️</span>
-                    <h2 class="section-title">Practice Questions</h2>
-                </div>
-        `;
-        blueprint.practice.forEach(q => {
-            html += `
-                <div class="practice-card">
-                    <div>${q.text}</div>
-                    ${q.hint ? `<div class="practice-hint">💡 ${q.hint}</div>` : ''}
-                </div>
-            `;
-        });
-        html += `</div>`;
-    }
-    
-    // Exam Relevance
-    if (blueprint.exam_relevance) {
-        html += `
-            <div class="luma-section">
-                <div class="section-header">
-                    <span class="section-icon">🎯</span>
-                    <h2 class="section-title">Exam Strategy</h2>
-                </div>
-                <div class="section-content">
-                    ${formatText(blueprint.exam_relevance)}
-                </div>
-            </div>
-        `;
-    }
-    
-    app.innerHTML = html;
-    
-    // Render Mermaid
-    if (blueprint.visual && blueprint.visual.type === 'mermaid') {
-        try {
-            await mermaid.run({ querySelector: '.mermaid' });
-        } catch (e) {
-            console.error('Mermaid error:', e);
-        }
-    }
-    
-    // Render Math
-    try {
-        renderMathInElement(document.body, {
-            delimiters: [
-                {left: '$$', right: '$$', display: true},
-                {left: '$', right: '$', display: false}
-            ]
-        });
-    } catch (e) {
-        console.error('KaTeX error:', e);
-    }
-    
-    updateProgress(100);
-}
-
-// ============================================================================
-// UTILITY FUNCTIONS
-// ============================================================================
-
-function formatText(text) {
-    if (!text) return '';
-    text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-    text = text.replace(/\n\n/g, '</p><p>');
-    text = text.replace(/\n/g, '<br>');
-    return `<p>${text}</p>`;
-}
-
-function updateProgress(percentage) {
-    const fill = document.getElementById('progressFill');
-    if (fill) {
-        fill.style.width = `${Math.min(percentage, 100)}%`;
-    }
-}
-
-// ============================================================================
-// LOAD CONTENT
-// ============================================================================
-
-async function loadContent() {
-    try {
-        const contentId = getRequestedContentId();
-        const paramsQS = new URLSearchParams(window.location.search);
-        // Explicit Coming Soon request (Study page uses content_id=coming-soon)
-        if (contentId && String(contentId).toLowerCase() === "coming-soon") {
-            const t = paramsQS.get("title") || paramsQS.get("chapter") || "Coming Soon";
-            renderComingSoonOnly(t);
-            return;
-        }
-
-
-        // If a canonical content_id is present, render the chapter
-        if (contentId) {
-            console.log('Loading content:', contentId);
-
-            const response = await fetch(`${API_BASE}/api/luma/content/${encodeURIComponent(contentId)}`);
-
-            if (!response.ok) {
-                // If we arrived here from Study with a chapter/title context, do NOT show library.
-                const t = paramsQS.get("title") || paramsQS.get("chapter") || "";
-                if (t) { renderComingSoonOnly(t); return; }
-                throw new Error(`Content not found (ID: ${contentId})`);
-            }
-
-            const result = await response.json();
-
-            if (!result.ok || !result.content) {
-                const t = paramsQS.get("title") || paramsQS.get("chapter") || "";
-                if (t) { renderComingSoonOnly(t); return; }
-                const msg = result && result.error ? String(result.error) : 'CONTENT_NOT_FOUND';
-                throw new Error(`${msg} (ID: ${contentId})`);
-            }
-
-            await renderContent(result.content);
-            return;
-        }
-
-        // Otherwise: show library (Option A) and let user choose available content IDs
-        const filters = getLibraryFilters();
-        console.log('Loading library with filters:', filters);
-
-        const all = await fetchContentList(50);
-        // Only show published by default
-        const published = all.filter(it => it && it.published === true);
-
-        const filtered = applyFilters(published, filters);
-
-
-        // If this is a deep-link from Study (chapter/title present) and nothing matches,
-        // show ONLY a calm Coming Soon screen (never fall back to full library list).
-        if ((filters && (filters.chapter || filters.title)) && filtered.length === 0) {
-            renderComingSoonOnly(filters.title || filters.chapter || "Coming Soon");
-            return;
-        }
-
-        // If filter yields exactly one match, auto-open it
-        if (filtered.length === 1) {
-            const u = new URL(window.location.href);
-            u.searchParams.set('content_id', filtered[0].id);
-            ['board','class','cls','subject','chapter','title','id'].forEach(k => u.searchParams.delete(k));
-            window.location.href = u.toString();
-            return;
-        }
-
-        // If no exact filtered match, show full published list (still useful)
-        // but if we do have filters, prefer showing filtered first, else all.
-        const toShow = (filtered.length > 0) ? filtered : published;
-        renderLibrary(toShow, filters);
-
-    } catch (error) {
-        console.error('Load error:', error);
-
-        const params = new URLSearchParams(window.location.search);
-        const contentId = (params.get('content_id') || params.get('id') || '').trim();
-        const title = (params.get('title') || 'Coming Soon').trim();
-
-        const msg = String(error && error.message ? error.message : 'Unknown error');
-        const isMissingContent = contentId && (
-            msg.toLowerCase().includes('content not found') ||
-            msg.toLowerCase().includes('content_not_found') ||
-            msg.toLowerCase().includes('not found') ||
-            msg.toLowerCase().includes('404')
-        );
-
-        if (isMissingContent) {
-            // Calm "Coming Soon" screen (single tab), so Study → Luma never shows an error wall.
-            document.getElementById('lumaApp').innerHTML = `
-                <div style="max-width:720px; margin:40px auto; padding:0 16px;">
-                    <div style="background:rgba(255,255,255,0.85); border:1px solid rgba(15,23,42,0.08); border-radius:16px; box-shadow:0 10px 30px rgba(15,23,42,0.06); padding:20px 18px;">
-                        <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
-                            <div style="width:34px; height:34px; border-radius:10px; background:rgba(79,141,255,0.12); display:flex; align-items:center; justify-content:center; font-weight:800; color:#2B5BFF;">KE</div>
-                            <div>
-                                <div style="font-weight:800; font-size:18px; color:#0f172a;">Content not available yet</div>
-                                <div style="font-size:13px; color:#64748b;">We are preparing this chapter. Check back soon.</div>
-                            </div>
-                        </div>
-                        <div style="margin-top:12px; font-size:16px; font-weight:750; color:#0f172a;">${escapeHtml(title)}</div>
-                        <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
-                            <button onclick="window.history.back()" style="padding:10px 14px; background:#4F8DFF; color:white; border:none; border-radius:12px; cursor:pointer; font-weight:700;">
-                                ← Go Back
-                            </button>
-                            <button onclick="window.location.href='luma.html'" style="padding:10px 14px; background:rgba(15,23,42,0.06); color:#0f172a; border:none; border-radius:12px; cursor:pointer; font-weight:700;">
-                                Open Library
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `;
-            return;
-        }
-
-        // Default: show real error (still useful during stabilization)
-        document.getElementById('lumaApp').innerHTML = `
-            <div class="error">
-                <strong>⚠️ Unable to load Luma</strong>
-                <p>${escapeHtml(msg)}</p>
-                <p>Please try again in a minute.</p>
-                <button onclick="window.history.back()" 
-                        style="margin-top:16px; padding:12px 24px; background:#4F8DFF; color:white; 
-                               border:none; border-radius:12px; cursor:pointer; font-weight:600;">
-                    ← Go Back
-                </button>
-            </div>
-        `;
-    }
-}
-
-// AI Tutor placeholder
-document.getElementById('aiFab').addEventListener('click', () => {
-    alert('AI Tutor coming soon! 🤖');
-});
-
-// Initialize
-loadContent();
 </script>
 <script src="sw-disable.js"></script>
 </body>

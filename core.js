@@ -2329,4 +2329,88 @@ window.toast = window.toast || ((msg) => KE.toast(msg));
     // Small delay so page layout stabilizes.
     setTimeout(maybeShowLowCreditWarning, 450);
   });
+
+// --- KNOWEASY EXPORTS (required for split JS files) ---
+// Feature scripts (study.js, luma.js, chat.js) historically relied on these
+// helpers being global. core.js is wrapped in an IIFE, so we expose a safe,
+// backward-compatible surface on `window`.
+try {
+  const w = window;
+  const exp = (name, val) => {
+    try {
+      if (typeof val === "function" || typeof val === "object") {
+        if (w[name] === undefined) w[name] = val;
+      }
+    } catch {}
+  };
+
+  // DOM + events
+  exp("$", $);
+  exp("on", on);
+
+  // UI
+  exp("toast", toast);
+
+  // Page guards
+  exp("IS_STUDY", IS_STUDY);
+  exp("IS_LUMA", IS_LUMA);
+  exp("IS_CHAT", IS_CHAT);
+
+  // Profile + study state
+  exp("getProfile", getProfile);
+  exp("saveProfile", saveProfile);
+  exp("normalizeProfile", normalizeProfile);
+  exp("effectiveClass", effectiveClass);
+  exp("isIntegrated1112", isIntegrated1112);
+  exp("activeYear", activeYear);
+  exp("setActiveYear", setActiveYear);
+  exp("getStudyMode", getStudyMode);
+  exp("setStudyMode", setStudyMode);
+  exp("getExamMode", getExamMode);
+  exp("setExamMode", setExamMode);
+  exp("allowedExamsForBoard", allowedExamsForBoard);
+
+  // Syllabus
+  exp("ensureSyllabusLoaded", ensureSyllabusLoaded);
+  exp("getSyllabus", getSyllabus);
+  exp("chapterVisibleForProfile", chapterVisibleForProfile);
+  exp("subjectIconPath", subjectIconPath);
+
+  // Utils
+  exp("clamp", clamp);
+  exp("slugify", slugify);
+  exp("escapeHtml", escapeHtml);
+
+  // Suggestions + mastery
+  exp("pickSuggestedChapter", pickSuggestedChapter);
+  exp("masteryUiFor", masteryUiFor);
+  exp("getChapterScore", getChapterScore);
+  exp("bumpChapterScore", bumpChapterScore);
+  exp("appendAttempt", appendAttempt);
+  exp("recomputeChapterMasteryFromAttempts", recomputeChapterMasteryFromAttempts);
+  exp("trySyncEngineMastery", trySyncEngineMastery);
+
+  // Setup modal
+  exp("bindSetupModal", bindSetupModal);
+  exp("openSetup", openSetup);
+
+  // Creator tools
+  exp("applyCreatorVisibility", applyCreatorVisibility);
+
+  // Resource resolution
+  exp("resolveResourceUrl", resolveResourceUrl);
+  exp("fileFor", fileFor);
+  exp("pdfParams", pdfParams);
+  exp("headOk", headOk);
+
+  // Also mirror on KE namespace for future code (non-breaking)
+  try {
+    if (w.KE && typeof w.KE === "object") {
+      w.KE.util = w.KE.util || {};
+      w.KE.util.slugify = w.KE.util.slugify || slugify;
+      w.KE.util.escapeHtml = w.KE.util.escapeHtml || escapeHtml;
+      w.KE.util.clamp = w.KE.util.clamp || clamp;
+    }
+  } catch {}
+} catch {}
 })();

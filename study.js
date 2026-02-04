@@ -30,181 +30,77 @@ function displayTitleForContent(c) {
 // otherwise return null so Luma shows ONLY a calm Coming Soon screen.
 // This MUST NOT throw (production-safe).
 async function resolveLumaContentId(filters) {
+  // FIX 2026-02-03: always send chapter_title and ensure chapter_id is never empty.
+  // This prevents false "coming-soon" when the UI only has a title.
+
   try {
-    filters = (filters && typeof filters === "object") ? filters : {};
-    const clsNum = Number(filters.clsNum || filters.class_level || 0) || null;
-    const boardKey = String(filters.boardKey || filters.board || "").trim();
-    const subjectSlug = String(filters.subjectSlug || filters.subject || "").trim();
-    const chapterSlug = String(filters.chapterSlug || filters.chapter || "").trim();
-    const chapterTitle = String(filters.chapterTitle || filters.title || "").trim();
+    const classNum = filters.classNum;
+    const boardKey = (filters.boardKey || '').toLowerCase();
+    const subjectKey = (filters.subjectKey || '').toLowerCase();
+    const chapterTitleRaw = (filters.chapterTitle || '').trim();
 
-    // Load API base from config.json (same origin)
-    let apiBase = "";
-    try {
-      const res = await fetch("config.json", { cache: "no-store" });
-      const j = await res.json();
-      apiBase = String(j.api_base_url || j.api_root || "").replace(/\/$/, "");
-    } catch (_) {}
+    const slugify = (txt) => String(txt || '')
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, '_')
+      .replace(/^_+|_+$/g, '');
 
-    if (!apiBase || !clsNum || !boardKey || !subjectSlug) return null;
-    // Prefer deterministic Study resolver (canonical): /api/study/resolve
-    // This avoids fuzzy matching and eliminates "sometimes Coming Soon" when content exists.
-    try {
-      const track = (["neet","jee","cet","cet_pcm","cet_pcb","jee_main","jee_adv","cet_med","cet_engg"].includes(boardKey.toLowerCase()))
-        ? "entrance" : "boards";
-      let program = boardKey.toLowerCase();
-      if (track === "boards") {
-        // keep as cbse|icse|maharashtra
-        if (program === "msb" || program === "mh") program = "maharashtra";
-      } else {
-        if (program.startsWith("jee")) program = "jee";
-        if (program === "cet" || program === "cet_engg") program = "cet_pcm";
-        if (program === "cet_med") program = "cet_pcb";
-      }
-      const params = new URLSearchParams();
-      params.set("class_num", String(clsNum));
-      params.set("track", track);
-      params.set("program", program);
-      params.set("subject_slug", subjectSlug);
-      params.set("chapter_id", String(chapterSlug || ""));
-      params.set("asset_type", "luma");
-      const rS = await fetch(`${apiBase}/api/study/resolve?${params.toString()}`);
-      if (rS.ok) {
-        const jS = await rS.json();
-        if (jS && jS.ok && jS.content_id) return jS.content_id;
-      }
-    } catch (e) {
-      // fall through to luma/resolve + catalog search
+    let chapterId = (filters.chapterId || '').trim();
+    if (!chapterId) chapterId = (filters.chapterSlug || '').trim();
+    if (!chapterId) chapterId = slugify(chapterTitleRaw);
+
+    // Decide new params too (backend supports both new + old)
+    const isEntrance = (filters && typeof filters.forceEntrance === 'boolean')
+      ? filters.forceEntrance
+      : ['neet','jee','cet_pcm','cet_pcb','cet','mhtcet'].includes(boardKey);
+    const track = isEntrance ? 'entrance' : 'boards';
+    const program = boardKey || (isEntrance ? 'neet' : 'cbse');
+    const subjectSlug = slugify(subjectKey);
+
+    const qs = new URLSearchParams();
+    // New API shape
+    qs.set('class_num', String(classNum));
+    qs.set('track', track);
+    qs.set('program', program);
+    qs.set('subject_slug', subjectSlug);
+    if (chapterId) qs.set('chapter_id', chapterId);
+    if (chapterTitleRaw) qs.set('chapter_title', chapterTitleRaw);
+    // Old/backcompat shape (some older deployments still read these)
+    qs.set('board', program);
+    qs.set('subject', subjectSlug);
+    if (chapterId) qs.set('chapter_slug', chapterId);
+    if (chapterTitleRaw) qs.set('title', chapterTitleRaw);
+    // Cache bust to avoid any CDN/browser caching
+    qs.set('_t', String(Date.now()));
+
+    const url = `${API_BASE}/api/study/resolve?${qs.toString()}`;
+
+    const res = await fetch(url, { method: 'GET', headers: { 'Accept': 'application/json' } });
+    const data = await res.json();
+
+    // Success cases
+    // Root fix: backend may return a valid content_id even when `status` is not one of our hard-coded values.
+    // Accept any truthy content_id when ok=true.
+    if (data && data.ok && data.content_id) {
+      return data.content_id;
+    }
+    // Back-compat: some builds use camelCase.
+    if (data && data.ok && data.contentId) {
+      return data.contentId;
     }
 
-    // First try dedicated resolve endpoint (fast + exact).
-    try {
-      const params = new URLSearchParams();
-      params.set("board", boardKey);
-      params.set("class_level", String(clsNum));
-      params.set("subject", subjectSlug);
-      params.set("chapter", String(chapterTitle || ""));
-      const r0 = await fetch(`${apiBase}/api/luma/resolve?${params.toString()}`);
-      if (r0.ok) {
-        const j0 = await r0.json();
-        if (j0 && j0.content_id) return j0.content_id;
-      }
-    } catch (e) {
-      // fall through to catalog search
+    // Some versions return content_id inside asset.ref_value
+    if (data && data.ok && data.asset && data.asset.ref_kind === 'db' && data.asset.ref_value) {
+      return data.asset.ref_value;
     }
 
-
-    // Canonicalize board/exam for backend filter matching (metadata uses CBSE/NEET/etc)
-    const b = boardKey.toLowerCase();
-    const canonicalBoard =
-      (b === "cbse") ? "CBSE" :
-      (b === "icse") ? "ICSE" :
-      (b === "msb" || b === "maharashtra" || b === "mh") ? "Maharashtra" :
-      (b === "neet") ? "NEET" :
-      (b === "jee" || b === "jee_adv" || b === "jee_main") ? "JEE" :
-      (b === "cet" || b === "cet_engg" || b === "cet_med") ? "CET" :
-      boardKey;
-
-    // Canonicalize subject for backend filter matching (metadata uses Physics/Chemistry/Biology/Math)
-    const s = subjectSlug.toLowerCase();
-    const canonicalSubject =
-      (s === "physics") ? "Physics" :
-      (s === "chemistry") ? "Chemistry" :
-      (s === "biology" || s === "bio") ? "Biology" :
-      (s === "math" || s === "mathematics") ? "Math" :
-      (s === "english") ? "English" :
-      subjectSlug;
-
-    // Fetch recent published content list for this (class, board, subject) and match chapter locally.
-    const url =
-      apiBase + "/api/luma/content"
-      + "?class_level=" + encodeURIComponent(String(clsNum))
-      + "&board=" + encodeURIComponent(String(canonicalBoard))
-      + "&subject=" + encodeURIComponent(String(canonicalSubject))
-      + "&limit=100";
-
-    const resp = await fetch(url, { method: "GET" });
-    if (!resp.ok) return null;
-
-    const data = await resp.json();
-    const items = (data && data.ok && Array.isArray(data.contents)) ? data.contents : [];
-    if (!items.length) return null;
-
-    // If chapterSlug itself looks like a content id, allow direct match.
-    if (chapterSlug && /^[a-z0-9]+(?:-[a-z0-9]+)+$/.test(chapterSlug)) {
-      const direct = items.find(it => String(it && it.id || "") === chapterSlug);
-      if (direct && direct.id) return direct.id;
-    }
-
-    // --- Robust matching (tolerant to chapter title variations) ---
-// We intentionally avoid strict equality only; we use a simple scoring match.
-const norm = (s) => String(s || "")
-  .toLowerCase()
-  .replace(/&/g, " and ")
-  .replace(/[^a-z0-9]+/g, "-")
-  .replace(/^-+|-+$/g, "");
-
-const tokens = (s) => norm(s).split("-").filter(Boolean);
-
-const wantTitle = chapterTitle || chapterSlug;
-const wantSlugA = norm(wantTitle);
-const wantSlugB = norm(chapterSlug);
-
-// Prefer: chapterSlug if present, else title
-const wantTokens = tokens(wantTitle);
-const wantKey = wantTokens.join(" ");
-
-const scoreCandidate = (it) => {
-  const md = (it && it.metadata) ? it.metadata : {};
-  const id = String(it && it.id || "");
-  const chRaw = md.chapter || "";
-  const tpRaw = md.topic || "";
-  const ch = norm(chRaw);
-  const tp = norm(tpRaw);
-  const idn = norm(id);
-
-  let score = 0;
-
-  // Exact matches
-  if (wantSlugA && (ch === wantSlugA || tp === wantSlugA)) score = Math.max(score, 100);
-  if (wantSlugB && (ch === wantSlugB || tp === wantSlugB)) score = Math.max(score, 98);
-
-  // Prefix / contains (covers "photosynthesis-in-higher-plants" vs "photosynthesis")
-  if (wantSlugA && (ch && (wantSlugA.startsWith(ch) || ch.startsWith(wantSlugA))) ) score = Math.max(score, 85);
-  if (wantSlugA && (tp && (wantSlugA.startsWith(tp) || tp.startsWith(wantSlugA))) ) score = Math.max(score, 82);
-  if (wantSlugA && (ch && (wantSlugA.includes(ch) || ch.includes(wantSlugA))) ) score = Math.max(score, 70);
-  if (wantSlugA && (tp && (wantSlugA.includes(tp) || tp.includes(wantSlugA))) ) score = Math.max(score, 68);
-
-  // Token overlap
-  const cTokens = [...new Set(tokens(chRaw + " " + tpRaw))];
-  if (wantTokens.length && cTokens.length) {
-    const set = new Set(cTokens);
-    const hit = wantTokens.filter(t => set.has(t));
-    const overlap = hit.length / Math.max(1, wantTokens.length);
-    score = Math.max(score, Math.round(overlap * 65));
-  }
-
-  // Id hint
-  if (wantSlugA && idn && (idn.includes(wantSlugA) || wantSlugA.includes(idn))) score = Math.max(score, 75);
-
-  return score;
-};
-
-let best = null;
-let bestScore = 0;
-for (const it of items) {
-  const sc = scoreCandidate(it);
-  if (sc > bestScore) { bestScore = sc; best = it; }
-}
-
-// Threshold to avoid wrong-subject bleed (keeps exam-safe behavior)
-if (best && best.id && bestScore >= 55) return String(best.id);
-
-return null;
-  } catch (_) {
+    return null;
+  } catch (err) {
+    console.error('[Study] resolveLumaContentId failed', err);
     return null;
   }
 }
+
 
 // Make resolver globally available (safety)
 window.resolveLumaContentId = resolveLumaContentId;
@@ -628,8 +524,9 @@ window.resolveLumaContentId = resolveLumaContentId;
       const activeClass = (String(s.name) === String(__keSelectedSubject)) ? " study-subject-pill--active" : "";
       const safeName = escapeHtml(s.name || "Subject");
       const safeNameAttr = escapeHtml(s.name || "");
+      const subjectSlug = escapeHtml(String((s.slug || s.subject_slug || s.subjectSlug) || slugify(s.name || "")));
       return `
-        <button class="study-subject-pill${activeClass}" data-subject="${safeNameAttr}" type="button">
+        <button class="study-subject-pill${activeClass}" data-subject="${safeNameAttr}" data-subject-slug="${subjectSlug}" type="button">
           <div class="study-subject-icon">
             <img src="${icon}" alt="${safeName}"
                  onerror="this.onerror=null;this.src='assets/subjects/science.png';" />
@@ -1983,7 +1880,104 @@ Tone: warm, calm, friendly. Use 1–3 soft emojis (🙂 💡 ✨). Avoid any har
       });
     }
 
-    // ✅ Event delegation for chapter actions
+    
+    // ✅ PRIMARY chapter click (CEO LOCKED)
+    // Clicking anywhere on a chapter card opens Luma via resolver.
+    const chapterListPrimary = $("chapterList");
+    if (chapterListPrimary) {
+      chapterListPrimary.addEventListener("click", async (e) => {
+        const card = e.target.closest(".study-chapter-card");
+        if (!card) return;
+
+        // If mini action button clicked, ignore here
+        if (e.target.closest("[data-action]")) return;
+
+        e.preventDefault();
+
+        const chapId = card.getAttribute("data-chapter-id") || "";
+        const chapTitle = card.getAttribute("data-chapter-title") || "Chapter";
+        const subject = document.getElementById("study-subject-label")?.textContent || "Subject";
+        const profile = getProfile();
+        if (!profile) return openSetup();
+
+        const clsNum = String(KE?.effectiveClass ? KE.effectiveClass(profile) : profile.class || "");
+        const examRowEl = document.querySelector('#examRow');
+        const examRowVisible = !!examRowEl && examRowEl.style.display !== 'none';
+        const activeExamKey = document.querySelector('#examRow .chip.is-active')?.dataset?.exam || "";
+        const boardKey = examRowVisible
+          ? String(activeExamKey || "neet").toLowerCase()
+          : String(profile.board || "").toLowerCase();
+
+        // CRITICAL FIX: Define variables needed for luma.html context
+        const modeKey = examRowVisible ? 'entrance' : 'boards';
+        const programKey = boardKey; // programKey is same as boardKey
+        // Backend expects single class (11 or 12), not range (11_12)
+        const classNum = clsNum.includes('_') ? clsNum.split('_')[0] : clsNum;
+        const subjectSlug = slugify(subject); // Convert subject name to slug
+
+        const filters = {
+          classNum: clsNum,
+          boardKey,
+    forceEntrance: (modeKey === 'entrance'),
+          subjectKey: subject,
+          chapterSlug: chapId,
+          chapterTitle: chapTitle
+        };
+
+        const contentId = await resolveLumaContentId(filters);
+        // Save last selected chapter context for luma.html fallback resolve
+        try {
+          const ctx = {
+            track: modeKey === 'entrance' ? 'entrance' : (modeKey || ''),
+            program: (programKey || '').toLowerCase(),
+            class_num: classNum,
+            subject_slug: subjectSlug,
+            chapter_id: chapId,
+            chapter_title: chapTitle
+          };
+          localStorage.setItem('ke_last_chapter_context', JSON.stringify(ctx));
+        } catch (e) {}
+
+        if (contentId) {
+          window.location.href = "luma.html?content_id=" + encodeURIComponent(contentId);
+        } else {
+          // Prefer passing full context so luma.html can resolve content_id reliably
+        try {
+          const ctx = {
+            track: modeKey === 'entrance' ? 'entrance' : (modeKey || ''),
+            program: (programKey || '').toLowerCase(),
+            class_num: classNum,
+            subject_slug: subjectSlug,
+            chapter_id: chapId,
+            chapter_title: chapTitle
+          };
+          localStorage.setItem('ke_last_chapter_context', JSON.stringify(ctx));
+        } catch (e) {}
+
+        const qs2 = new URLSearchParams();
+        if (modeKey === 'entrance') qs2.set('track', 'entrance');
+        if (programKey) qs2.set('program', (programKey || '').toLowerCase());
+        if (classNum) qs2.set('class_num', String(classNum));
+        if (subjectSlug) qs2.set('subject_slug', subjectSlug);
+        if (chapId) qs2.set('chapter_id', chapId);
+        if (chapTitle) qs2.set('chapter_title', chapTitle);
+        // Keep title for UI header even before resolve
+        if (chapTitle) qs2.set('title', chapTitle);
+
+        // If we already resolved, include content_id. Otherwise luma.html will resolve.
+        if (contentId) {
+          qs2.set('content_id', contentId);
+        } else {
+          qs2.set('content_id', 'coming-soon');
+        }
+
+        window.location.href = "luma.html?" + qs2.toString();
+}
+      });
+    }
+
+
+  // ✅ Event delegation for chapter actions
     const chapterList = $("chapterList");
     if (chapterList) {
       chapterList.addEventListener("click", async (e) => {
@@ -2037,23 +2031,28 @@ Tone: warm, calm, friendly. Use 1–3 soft emojis (🙂 💡 ✨). Avoid any har
           // due to cached DOM or partial refresh), we still want the correct content.
           // So: if the Exam row is currently visible and has an active exam chip, we
           // treat it as entrance mode regardless of the pill state.
-          const modeKey = (document.querySelector('.mode-pill.is-active')?.dataset?.mode) || (profile && profile.mode) || "boards";
-          const examRowEl = document.querySelector('#examRow');
-          const examRowVisible = !!examRowEl && examRowEl.style.display !== 'none';
-          const activeExamKey = document.querySelector('#examRow .chip.is-active')?.dataset?.exam || "";
+          const modeKey = (typeof getStudyMode === "function")
+            ? getStudyMode(profile)
+            : (profile && (profile.studyMode || profile.study_mode || profile.mode)) || "boards";
+
+          const activeExamKey = (typeof getExamMode === "function")
+            ? getExamMode(profile)
+            : (profile && (profile.examMode || profile.exam_mode || profile.exam)) || "neet";
 
           let boardKey = "";
-          if (examRowVisible) {
-            boardKey = String(activeExamKey || "neet").toLowerCase();
-          } else if (modeKey === "entrance") {
+          if (String(modeKey).toLowerCase() === "entrance") {
             boardKey = String(activeExamKey || "neet").toLowerCase();
           } else {
-            const bKey = (profile && profile.board) ? String(profile.board) : (document.querySelector('#boardRow .chip.is-active')?.dataset?.board || "");
+            const bKey = (profile && profile.board) ? String(profile.board) : "";
             const _rawBoardKey = String(bKey);
             boardKey = (_rawBoardKey.toLowerCase() === "msb") ? "maharashtra" : _rawBoardKey.toLowerCase();
           }
           const subjectSlug = slugify(subject);
           const chapterSlug = String(chapId || "");
+
+          // CRITICAL FIX: Define variables for URL context (same as primary handler)
+          const programKey = boardKey;
+          const classNum = clsNum.includes('_') ? clsNum.split('_')[0] : clsNum;
 
           // NEW (CEO FIX): Study -> Luma must open a specific chapter content_id (or a single Coming Soon screen).
 
@@ -2066,9 +2065,9 @@ if (_maybeId && /^[a-z0-9]+(?:-[a-z0-9]+)+$/.test(_maybeId) && _maybeId !== "com
 
 (async () => {
   const filters = {
-    clsNum,
+    classNum: clsNum,
     boardKey,
-    subjectSlug: subjectSlug,
+    subjectKey: subjectSlug,
     chapterSlug: chapterSlug,
     chapterTitle: String(chapTitle || "").trim()
   };
@@ -2076,9 +2075,19 @@ if (_maybeId && /^[a-z0-9]+(?:-[a-z0-9]+)+$/.test(_maybeId) && _maybeId !== "com
   if (contentId) {
     window.location.href = "luma.html?content_id=" + encodeURIComponent(contentId);
   } else {
-    // Not available yet -> show a single Coming Soon screen in Luma (no library list).
-    const t = String(chapTitle || "Coming Soon");
-    window.location.href = "luma.html?content_id=" + encodeURIComponent("coming-soon") + "&title=" + encodeURIComponent(t);
+    // Build URL with full context for luma.html resolution
+    const qs = new URLSearchParams();
+    if (modeKey === 'entrance') qs.set('track', 'entrance');
+    else if (modeKey) qs.set('track', modeKey);
+    if (programKey) qs.set('program', programKey.toLowerCase());
+    if (classNum) qs.set('class_num', String(classNum));
+    if (subjectSlug) qs.set('subject_slug', subjectSlug);
+    if (chapId) qs.set('chapter_id', chapId);
+    if (chapTitle) qs.set('chapter_title', chapTitle);
+    if (chapTitle) qs.set('title', chapTitle); // For UI header
+    qs.set('content_id', 'coming-soon');
+    
+    window.location.href = "luma.html?" + qs.toString();
   }
 })();
 return;

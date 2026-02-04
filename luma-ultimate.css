@@ -1,0 +1,1156 @@
+/* ===============================================
+   LUMA ULTIMATE - Korean Premium Design
+   Beautiful • Soft • Powerful • Universal
+   CEO & Senior Designer Final Version
+   =============================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800;900&display=swap');
+
+/* ===============================================
+   KOREAN PREMIUM COLOR SYSTEM
+   =============================================== */
+:root {
+  /* Soft Backgrounds */
+  --bg-main: #F8F9FE;
+  --bg-card: #FFFFFF;
+  --bg-sidebar: #FAFBFF;
+  --bg-ai: #F5F7FF;
+  --bg-hover: #F0F2FF;
+  
+  /* Beautiful Colors */
+  --primary: #6B7FFF;
+  --primary-light: #8B9AFF;
+  --primary-dark: #5566EE;
+  --secondary: #FFB5D8;
+  --accent: #7BE7C4;
+  
+  /* Semantic Colors */
+  --success: #7BE7C4;
+  --success-dark: #4ECAA3;
+  --warning: #FFD88A;
+  --warning-dark: #FFB84D;
+  --danger: #FFB0B0;
+  --danger-dark: #FF8A8A;
+  --info: #B5D8FF;
+  --info-dark: #7AB5FF;
+  
+  /* Text - Soft */
+  --text-primary: #2D3142;
+  --text-secondary: #5A6279;
+  --text-tertiary: #8B95A5;
+  --text-light: #B8C0CC;
+  
+  /* Borders */
+  --border: #E8ECF4;
+  --border-light: #F0F3F9;
+  --border-focus: #B5C4FF;
+  
+  /* Gradients - Soft & Beautiful */
+  --gradient-primary: linear-gradient(135deg, #6B7FFF 0%, #8B9AFF 100%);
+  --gradient-success: linear-gradient(135deg, #7BE7C4 0%, #A8F5DD 100%);
+  --gradient-pink: linear-gradient(135deg, #FFB5D8 0%, #FFD4E8 100%);
+  --gradient-bg: linear-gradient(135deg, #F8F9FE 0%, #F0F4FF 50%, #F5F8FF 100%);
+  --gradient-glass: linear-gradient(180deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 100%);
+  
+  /* Shadows - Soft & Deep */
+  --shadow-xs: 0 2px 8px rgba(107, 127, 255, 0.04);
+  --shadow-sm: 0 4px 12px rgba(107, 127, 255, 0.08);
+  --shadow-md: 0 8px 24px rgba(107, 127, 255, 0.12);
+  --shadow-lg: 0 12px 32px rgba(107, 127, 255, 0.16);
+  --shadow-xl: 0 16px 48px rgba(107, 127, 255, 0.20);
+  --shadow-2xl: 0 24px 64px rgba(107, 127, 255, 0.24);
+  --shadow-inner: inset 0 2px 8px rgba(107, 127, 255, 0.06);
+  
+  /* Glass Effect */
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.9);
+  --glass-blur: blur(20px);
+  
+  /* Spacing - Generous */
+  --s1: 4px;   --s2: 8px;   --s3: 12px;  --s4: 16px;
+  --s5: 20px;  --s6: 24px;  --s8: 32px;  --s10: 40px;
+  --s12: 48px; --s16: 64px; --s20: 80px; --s24: 96px;
+  
+  /* Border Radius - Very Rounded */
+  --r-sm: 12px;  --r-md: 16px;  --r-lg: 20px;
+  --r-xl: 24px;  --r-2xl: 28px; --r-3xl: 32px;
+  --r-full: 9999px;
+  
+  /* Typography */
+  --font-display: 'Poppins', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  
+  /* Transitions - Smooth */
+  --ease-smooth: cubic-bezier(0.4, 0.0, 0.2, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-fast: 200ms;
+  --duration-base: 300ms;
+  --duration-slow: 400ms;
+}
+
+/* ===============================================
+   RESET & BASE
+   =============================================== */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.7;
+  color: var(--text-primary);
+  background: var(--gradient-bg);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ===============================================
+   LAYOUT STRUCTURE
+   =============================================== */
+.luma-app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.luma-container {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: var(--s4);
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .luma-container {
+    padding: var(--s6);
+  }
+}
+
+/* ===============================================
+   HEADER - Premium & Floating
+   =============================================== */
+.luma-header {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-2xl);
+  padding: var(--s5) var(--s6);
+  margin-bottom: var(--s6);
+  box-shadow: var(--shadow-lg);
+  position: sticky;
+  top: var(--s4);
+  z-index: 100;
+  transition: all var(--duration-base) var(--ease-smooth);
+}
+
+.luma-header:hover {
+  box-shadow: var(--shadow-xl);
+  transform: translateY(-2px);
+}
+
+.luma-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s4);
+  margin-bottom: var(--s5);
+  flex-wrap: wrap;
+}
+
+/* Brand - Beautiful */
+.luma-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 800;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.02em;
+}
+
+.luma-brand-icon {
+  font-size: 28px;
+  filter: drop-shadow(0 4px 8px rgba(107, 127, 255, 0.3));
+}
+
+/* Actions */
+.luma-actions {
+  display: flex;
+  gap: var(--s3);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Select - Beautiful Dropdown */
+.luma-select {
+  padding: 10px 36px 10px 16px;
+  border: 2px solid var(--border);
+  border-radius: var(--r-lg);
+  background: var(--bg-card);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  cursor: pointer;
+  appearance: none;
+  transition: all var(--duration-fast) var(--ease-smooth);
+  box-shadow: var(--shadow-xs);
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"><path fill="%236B7FFF" d="M3 5l4 4 4-4z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
+
+.luma-select:hover {
+  border-color: var(--primary);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+
+.luma-select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(107, 127, 255, 0.1);
+}
+
+/* Button - Premium */
+.luma-btn-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-lg);
+  background: var(--bg-card);
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 20px;
+  transition: all var(--duration-fast) var(--ease-smooth);
+  box-shadow: var(--shadow-xs);
+}
+
+.luma-btn-icon:hover {
+  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Title - Beautiful Typography */
+.luma-title {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: var(--s2);
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+}
+
+.luma-subtitle {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  flex-wrap: wrap;
+}
+
+.luma-subtitle span {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+}
+
+/* ===============================================
+   MAIN LAYOUT - 3 COLUMN RESPONSIVE
+   =============================================== */
+.luma-main {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: var(--s6);
+  align-items: start;
+  position: relative;
+}
+
+/* AI Sidebar shows on desktop */
+@media (min-width: 1280px) {
+  .luma-main {
+    grid-template-columns: 280px 1fr 360px;
+  }
+  .luma-ai-sidebar {
+    display: flex !important;
+  }
+}
+
+@media (max-width: 1024px) {
+  .luma-main {
+    grid-template-columns: 260px 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .luma-main {
+    grid-template-columns: 1fr;
+  }
+  .luma-sidebar {
+    position: static !important;
+  }
+}
+
+/* ===============================================
+   SIDEBAR - Timeline Navigation
+   =============================================== */
+.luma-sidebar {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-2xl);
+  padding: var(--s6);
+  box-shadow: var(--shadow-lg);
+  position: sticky;
+  top: 120px;
+  transition: all var(--duration-base) var(--ease-smooth);
+}
+
+.luma-sidebar:hover {
+  box-shadow: var(--shadow-xl);
+}
+
+.luma-sidebar-title {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: var(--s6);
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+}
+
+/* Timeline - Beautiful Progress */
+.luma-timeline {
+  position: relative;
+}
+
+.luma-timeline::before {
+  content: '';
+  position: absolute;
+  left: 19px;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  background: linear-gradient(180deg, var(--primary) 0%, var(--secondary) 100%);
+  opacity: 0.15;
+  border-radius: var(--r-full);
+}
+
+.luma-timeline-item {
+  position: relative;
+  padding-left: 52px;
+  margin-bottom: var(--s6);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-smooth);
+}
+
+.luma-timeline-item:hover {
+  transform: translateX(6px);
+}
+
+.luma-timeline-dot {
+  position: absolute;
+  left: 0;
+  top: 2px;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-md);
+  background: var(--bg-card);
+  border: 3px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 14px;
+  color: var(--text-light);
+  transition: all var(--duration-base) var(--ease-bounce);
+  box-shadow: var(--shadow-xs);
+}
+
+.luma-timeline-item.active .luma-timeline-dot {
+  background: var(--gradient-primary);
+  border-color: transparent;
+  color: white;
+  box-shadow: 0 8px 20px rgba(107, 127, 255, 0.4);
+  transform: scale(1.1);
+}
+
+.luma-timeline-item.completed .luma-timeline-dot {
+  background: var(--gradient-success);
+  border-color: transparent;
+  color: white;
+  box-shadow: 0 6px 16px rgba(123, 231, 196, 0.4);
+}
+
+.luma-timeline-label {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+
+.luma-timeline-count {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+}
+
+/* Progress - Beautiful */
+.luma-progress {
+  margin-top: var(--s6);
+  padding-top: var(--s6);
+  border-top: 2px solid var(--border-light);
+}
+
+.luma-progress-label {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: var(--s3);
+  display: flex;
+  justify-content: space-between;
+}
+
+.luma-progress-bar {
+  height: 10px;
+  background: var(--border-light);
+  border-radius: var(--r-full);
+  overflow: hidden;
+  box-shadow: var(--shadow-inner);
+}
+
+.luma-progress-fill {
+  height: 100%;
+  background: var(--gradient-primary);
+  border-radius: var(--r-full);
+  transition: width 0.6s var(--ease-smooth);
+  box-shadow: inset 0 1px 4px rgba(255, 255, 255, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+.luma-progress-fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  transform: translateX(-100%);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  to { transform: translateX(100%); }
+}
+
+/* ===============================================
+   CONTENT CARD - Premium & Beautiful
+   =============================================== */
+.luma-content {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-2xl);
+  padding: var(--s10);
+  box-shadow: var(--shadow-xl);
+  min-height: 600px;
+  animation: fadeInUp 0.5s var(--ease-smooth);
+  position: relative;
+  overflow: hidden;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Card Badge - Soft & Beautiful */
+.luma-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  padding: 8px var(--s4);
+  border-radius: var(--r-full);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: var(--s6);
+  transition: all var(--duration-fast) var(--ease-smooth);
+}
+
+.luma-badge:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Badge Variants - Soft Colors */
+.badge-explain { background: rgba(107, 127, 255, 0.12); color: var(--primary); }
+.badge-fact { background: rgba(181, 216, 255, 0.12); color: var(--info-dark); }
+.badge-check { background: rgba(123, 231, 196, 0.12); color: var(--success-dark); }
+.badge-practice { background: rgba(123, 231, 196, 0.12); color: var(--success-dark); }
+.badge-activity { background: rgba(255, 216, 138, 0.12); color: var(--warning-dark); }
+.badge-visual { background: rgba(181, 196, 255, 0.12); color: var(--primary); }
+.badge-formula { background: rgba(181, 196, 255, 0.12); color: var(--primary-dark); }
+.badge-example { background: rgba(255, 216, 138, 0.12); color: var(--warning-dark); }
+
+/* Card Title - Beautiful Typography */
+.luma-card-title {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: var(--s6);
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+
+/* Card Body - Perfect Reading */
+.luma-card-body {
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+.luma-card-body strong {
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.luma-card-body p {
+  margin-bottom: var(--s5);
+}
+
+.luma-card-body ul,
+.luma-card-body ol {
+  margin: var(--s4) 0 var(--s5) var(--s8);
+}
+
+.luma-card-body li {
+  margin-bottom: var(--s3);
+  padding-left: var(--s2);
+}
+
+.luma-card-body li::marker {
+  color: var(--primary);
+}
+
+/* ===============================================
+   IMAGE SUPPORT - Beautiful Display
+   =============================================== */
+.luma-image {
+  margin: var(--s6) 0;
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  transition: all var(--duration-base) var(--ease-smooth);
+}
+
+.luma-image:hover {
+  box-shadow: var(--shadow-2xl);
+  transform: translateY(-4px);
+}
+
+.luma-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.luma-image-caption {
+  padding: var(--s4);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  text-align: center;
+  background: var(--bg-hover);
+}
+
+/* ===============================================
+   QUIZ SYSTEM - Beautiful & Interactive
+   =============================================== */
+.luma-quiz {
+  margin-top: var(--s8);
+  padding-top: var(--s8);
+  border-top: 2px solid var(--border-light);
+}
+
+.luma-quiz-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--text-primary);
+  margin-bottom: var(--s5);
+}
+
+.luma-quiz-options {
+  display: grid;
+  gap: var(--s3);
+  margin: var(--s5) 0;
+}
+
+.luma-quiz-option {
+  background: var(--bg-card);
+  border: 2px solid var(--border);
+  border-radius: var(--r-xl);
+  padding: var(--s5);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-smooth);
+  display: flex;
+  align-items: center;
+  gap: var(--s4);
+  font-weight: 500;
+  box-shadow: var(--shadow-xs);
+}
+
+.luma-quiz-option:hover:not(.correct):not(.wrong) {
+  border-color: var(--primary);
+  transform: translateX(8px);
+  box-shadow: var(--shadow-md);
+  background: var(--bg-hover);
+}
+
+.luma-quiz-option.correct {
+  background: rgba(123, 231, 196, 0.1);
+  border-color: var(--success);
+  box-shadow: 0 8px 24px rgba(123, 231, 196, 0.3);
+  animation: correctPulse 0.6s var(--ease-bounce);
+}
+
+.luma-quiz-option.wrong {
+  background: rgba(255, 176, 176, 0.1);
+  border-color: var(--danger);
+  animation: shake 0.5s var(--ease-smooth);
+}
+
+@keyframes correctPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  75% { transform: translateX(10px); }
+}
+
+.luma-option-letter {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-md);
+  background: var(--gradient-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 16px;
+  flex-shrink: 0;
+  box-shadow: 0 6px 16px rgba(107, 127, 255, 0.4);
+  transition: all var(--duration-fast) var(--ease-smooth);
+}
+
+.luma-quiz-option:hover .luma-option-letter {
+  transform: scale(1.1);
+}
+
+.luma-quiz-option.correct .luma-option-letter {
+  background: var(--gradient-success);
+}
+
+.luma-quiz-option.wrong .luma-option-letter {
+  background: linear-gradient(135deg, var(--danger) 0%, var(--danger-dark) 100%);
+}
+
+.luma-explanation {
+  margin-top: var(--s6);
+  padding: var(--s5);
+  background: rgba(181, 216, 255, 0.1);
+  border-radius: var(--r-xl);
+  border-left: 4px solid var(--info);
+  font-weight: 500;
+  display: none;
+  animation: fadeInUp 0.4s var(--ease-smooth);
+  box-shadow: var(--shadow-sm);
+}
+
+.luma-explanation strong {
+  color: var(--info-dark);
+}
+
+/* ===============================================
+   NAVIGATION - Premium Buttons
+   =============================================== */
+.luma-nav {
+  display: flex;
+  gap: var(--s4);
+  margin-top: var(--s10);
+  padding-top: var(--s8);
+  border-top: 2px solid var(--border-light);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.luma-btn {
+  padding: 14px var(--s6);
+  border-radius: var(--r-xl);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  border: none;
+  transition: all var(--duration-fast) var(--ease-smooth);
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  letter-spacing: -0.01em;
+  box-shadow: var(--shadow-sm);
+}
+
+.luma-btn-back {
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: 2px solid var(--border);
+}
+
+.luma-btn-back:hover:not(:disabled) {
+  border-color: var(--primary);
+  transform: translateX(-6px);
+  box-shadow: var(--shadow-md);
+}
+
+.luma-btn-next {
+  background: var(--gradient-primary);
+  color: white;
+  box-shadow: 0 8px 20px rgba(107, 127, 255, 0.4);
+  margin-left: auto;
+}
+
+.luma-btn-next:hover:not(:disabled) {
+  box-shadow: 0 12px 28px rgba(107, 127, 255, 0.5);
+  transform: translateY(-3px);
+}
+
+.luma-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.luma-btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.luma-indicator {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  padding: 10px var(--s5);
+  background: var(--bg-hover);
+  border-radius: var(--r-full);
+  border: 2px solid var(--border);
+}
+
+/* ===============================================
+   AI SIDEBAR - Premium Chat Interface
+   =============================================== */
+.luma-ai-sidebar {
+  background: var(--bg-ai);
+  border: 1px solid var(--border);
+  border-radius: var(--r-2xl);
+  padding: var(--s5);
+  box-shadow: var(--shadow-lg);
+  position: sticky;
+  top: 120px;
+  height: calc(100vh - 140px);
+  max-height: 700px;
+  width: 100%;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  display: none; /* Shows on desktop only */
+}
+
+.luma-ai-header {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  padding: var(--s4);
+  background: var(--gradient-primary);
+  border-radius: var(--r-lg);
+  color: white;
+  margin-bottom: var(--s4);
+  box-shadow: var(--shadow-md);
+}
+
+.luma-ai-icon {
+  font-size: 24px;
+}
+
+.luma-ai-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 16px;
+}
+
+.luma-ai-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--s2);
+  margin-bottom: var(--s4);
+}
+
+.luma-ai-message {
+  padding: var(--s4);
+  border-radius: var(--r-lg);
+  margin-bottom: var(--s3);
+  font-size: 14px;
+  line-height: 1.6;
+  animation: fadeInUp 0.3s var(--ease-smooth);
+}
+
+.luma-ai-message.user {
+  background: var(--gradient-primary);
+  color: white;
+  margin-left: var(--s8);
+  box-shadow: var(--shadow-sm);
+}
+
+.luma-ai-message.assistant {
+  background: var(--bg-card);
+  color: var(--text-primary);
+  margin-right: var(--s8);
+  border: 1px solid var(--border);
+}
+
+.luma-ai-input-container {
+  display: flex;
+  gap: var(--s2);
+}
+
+.luma-ai-input {
+  flex: 1;
+  padding: var(--s3);
+  border: 2px solid var(--border);
+  border-radius: var(--r-lg);
+  font-family: var(--font-body);
+  font-size: 14px;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  transition: all var(--duration-fast) var(--ease-smooth);
+  resize: none;
+  max-height: 120px;
+}
+
+.luma-ai-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(107, 127, 255, 0.1);
+}
+
+.luma-ai-send {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-lg);
+  background: var(--gradient-primary);
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--duration-fast) var(--ease-smooth);
+}
+
+.luma-ai-send:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+/* ===============================================
+   FLOATING AI BUTTON (Mobile/Tablet)
+   =============================================== */
+.luma-ai-fab {
+  position: fixed;
+  right: var(--s5);
+  bottom: var(--s5);
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--gradient-primary);
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 12px 32px rgba(107, 127, 255, 0.5);
+  z-index: 1000;
+  transition: all var(--duration-fast) var(--ease-smooth);
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.luma-ai-fab:hover {
+  transform: scale(1.15) translateY(-4px);
+  box-shadow: 0 16px 40px rgba(107, 127, 255, 0.6);
+}
+
+@media (min-width: 1280px) {
+  .luma-ai-fab {
+    display: none;
+  }
+}
+
+/* ===============================================
+   TOAST NOTIFICATIONS - Beautiful
+   =============================================== */
+.luma-toast {
+  position: fixed;
+  top: var(--s6);
+  right: var(--s6);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  padding: var(--s5);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-2xl);
+  border: 1px solid var(--glass-border);
+  z-index: 1001;
+  animation: slideInRight 0.4s var(--ease-smooth);
+  display: none;
+  min-width: 300px;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.luma-toast.show {
+  display: block;
+}
+
+.luma-toast-icon {
+  font-size: 32px;
+  margin-bottom: var(--s2);
+  animation: bounceIn 0.6s var(--ease-bounce);
+}
+
+@keyframes bounceIn {
+  0% { transform: scale(0); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.luma-toast-text {
+  font-weight: 700;
+  color: var(--text-primary);
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+/* ===============================================
+   CONFETTI - Celebration!
+   =============================================== */
+.luma-confetti {
+  position: fixed;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  animation: confettiFall 3s linear forwards;
+  z-index: 1000;
+}
+
+@keyframes confettiFall {
+  to {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+/* ===============================================
+   LOADING STATE - Beautiful
+   =============================================== */
+.luma-loading {
+  text-align: center;
+  padding: var(--s16);
+}
+
+.luma-spinner {
+  width: 56px;
+  height: 56px;
+  border: 5px solid var(--border-light);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto var(--s5);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.luma-loading-text {
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-top: var(--s4);
+}
+
+/* ===============================================
+   RESPONSIVE DESIGN
+   =============================================== */
+@media (max-width: 1024px) {
+  .luma-title {
+    font-size: 26px;
+  }
+  
+  .luma-card-title {
+    font-size: 24px;
+  }
+  
+  .luma-content {
+    padding: var(--s8);
+  }
+}
+
+@media (max-width: 768px) {
+  .luma-container {
+    padding: var(--s3);
+  }
+  
+  .luma-header {
+    padding: var(--s4);
+  }
+  
+  .luma-title {
+    font-size: 22px;
+  }
+  
+  .luma-content {
+    padding: var(--s6);
+  }
+  
+  .luma-card-title {
+    font-size: 20px;
+  }
+  
+  .luma-ai-fab {
+    width: 56px;
+    height: 56px;
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .luma-quiz-option {
+    padding: var(--s4);
+  }
+  
+  .luma-option-letter {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+  }
+}
+
+/* ===============================================
+   UTILITIES
+   =============================================== */
+.hidden { display: none !important; }
+.text-center { text-align: center; }
+
+/* Custom Scrollbar - Beautiful */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--border-light);
+  border-radius: var(--r-full);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gradient-primary);
+  border-radius: var(--r-full);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+  background-clip: padding-box;
+}
+
+/* Selection - Beautiful */
+::selection {
+  background: rgba(107, 127, 255, 0.2);
+  color: var(--text-primary);
+}
+
+/* Print Styles */
+@media print {
+  .luma-ai-sidebar,
+  .luma-ai-fab,
+  .luma-toast,
+  .luma-nav {
+    display: none !important;
+  }
+}
+
+/* End of Luma Ultimate CSS */
